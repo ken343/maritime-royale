@@ -33,7 +33,7 @@ An ambitious Player vs. Player strategy game set on a dynamically sized 2D grid,
 ### Game Overview
 At the beginning of the game, all players are allotted with a Mothership: a slow-moving capital unit which can attack enemy-controlled units and construct player-controlled Airship units. When a player's Mothership is destroyed, the player is defeated. Thus, the player's primary objective is to destroy all enemy Motherships.
 
-The game map is a 2-Dimensional grid, dynamically sized to fit the number of participants. Each player selects a valid tile (non-occupied, water) to initially place their Mothership. Once all Motherships have been placed, the game is begun.
+The game map is a 2-Dimensional grid, dynamically sized to fit the number of participants. Each player Mothership is randomly placed on a valid tile (non-occupied, water tile). Once all Motherships have been placed, the game is begun.
 
 Each round is time-limited and carried out synchronously for all players, meaning that the players are performing their turns at the same time. For each turn, every player-controlled unit has the opportunity to move and perform a single action. These actions include:
 * Wait - The unit can forego their action to await the next round.
@@ -42,9 +42,9 @@ Each round is time-limited and carried out synchronously for all players, meanin
 
 Once an action is performed by a unit, the player must wait until the next round to control that unit again. Player-controllable units include:
 * Mothership - A slow-moving aircraft carrier that can construct Jets and capture resource tiles
-* Jets - characteristics TBD
-* Destroyers - characteristics TBD
-* Submarines - characteristics TBD
+* Jets - An aircraft unit that can easily defeat submarines, but have a difficult time against Destroyers.
+* Destroyers - A naval unit which can combat Jets, but are susceptible to Submarine attacks.
+* Submarines - A subnautical unit designed to eliminate Destroyers, but are thwarted by Jets.
 
 The game map is predominantly constituted of water tiles, where units can move freely and engage in naval battle. However, prior to the Mothership placement phase, special resource tiles are sparsely distributed across the map. Players can claim and reclaim these tiles by using specific unit-types to capture them. Once claimed, these tiles will grant benefits to the owner. These tiles, and their benefits, include:
 * Islands - Each turn, awards the owner with currency. Also increases the max capacity of the owner's fleet.
@@ -55,6 +55,8 @@ Players are tasked with strategically combatting enemy players while capturing, 
 ### Built With
 
 * [Go](https://golang.org/)
+* [AWS](https://aws.amazon.com/)
+* [Ubuntu 18.04](http://releases.ubuntu.com/18.04.4/)
 * [Docker](https://www.docker.com/)
 * [Kubernetes](https://kubernetes.io/)
 * [Terraform](https://www.terraform.io/)
