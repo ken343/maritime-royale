@@ -42,5 +42,6 @@ An ambitious Player vs. Player strategy game set on a dynamically sized 2D grid,
 * [Docker](https://www.docker.com/)
 * [Kubernetes](https://kubernetes.io/)
 * [Terraform](https://www.terraform.io/)
+* [go-sdl2](https://github.com/veandco/go-sdl2)
 
 
