@@ -63,3 +63,4 @@ Players are tasked with strategically combatting enemy players while capturing, 
 * [go-sdl2](https://github.com/veandco/go-sdl2)
 
 
+![Demo Image](https://cdn.discordapp.com/attachments/689340216284020812/689544753075060736/screenshot.png)
