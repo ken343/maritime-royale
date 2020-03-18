@@ -6,7 +6,8 @@ import (
 	"net"
 )
 
-//Server starts a server on the selected port
+//Server starts a server on the selected port and acts
+//as the main entrance into the server package.
 func Server(port string) {
 
 	server, err := net.Listen("tcp", port)
