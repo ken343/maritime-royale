@@ -3,6 +3,8 @@ package server
 import (
 	"net"
 
+	"github.com/JosephZoeller/maritime-royale/pkg/mrp"
+
 	"github.com/JosephZoeller/maritime-royale/pkg/weather"
 
 	"github.com/JosephZoeller/maritime-royale/pkg/units"
@@ -18,11 +20,12 @@ type Square struct {
 	weather    weather.WeatherServer
 }
 
-var mapData = map[int]map[int]Square{}
+var packet []byte
 
 const MAPX, MAPY = 50, 50
 
 func init() {
+	var mapData = map[int]map[int]Square{}
 	for x := 0; x < MAPX; x++ {
 		var temp = map[int]Square{}
 		for y := 0; y < MAPY; y++ {
@@ -42,17 +45,22 @@ func init() {
 		}
 		mapData[x] = temp
 	}
-}
 
-func sendMap(conn net.Conn) {
-	var sentMap = ""
+	var seperator = "/"
+	var body = ""
 	for _, vx := range mapData {
 		var line = ""
 		for _, vy := range vx {
 			line = line + vy.terrain.OnDrawServer()
 		}
-		sentMap = sentMap + line + "\n"
+		body = body + line + seperator
 	}
 
-	conn.Write([]byte(sentMap))
+	var sendingMRP = mrp.NewMRP("MAP", body, seperator)
+
+	packet = mrp.MRPToByte(sendingMRP)
+}
+
+func sendMap(conn net.Conn) {
+	conn.Write(packet)
 }
