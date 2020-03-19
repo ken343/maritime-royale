@@ -1,9 +1,5 @@
 package units
 
-type UnitServer interface {
-	OnDrawServer() string
-}
-
-type UnitClient interface {
-	OnDrawClient() string
+type Unit interface {
+	Draw()
 }

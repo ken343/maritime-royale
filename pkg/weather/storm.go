@@ -7,7 +7,6 @@ type storm struct {
 func NewStorm() storm {
 	return storm{symbol: "#"}
 }
+func (s storm) Draw() {
 
-func (s storm) OnDrawServer() string {
-	return s.symbol
 }

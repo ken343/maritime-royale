@@ -1,9 +1,5 @@
 package terrain
 
-type TerrainServer interface {
-	OnDrawServer() string
-}
-
-type TerrainClient interface {
-	OnDrawClient() string
+type Terrain interface {
+	Draw()
 }

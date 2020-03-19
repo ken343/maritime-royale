@@ -7,7 +7,6 @@ type water struct {
 func NewWater() water {
 	return water{symbol: "w"}
 }
+func (s water) Draw() {
 
-func (s water) OnDrawServer() string {
-	return s.symbol
 }

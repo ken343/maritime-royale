@@ -7,7 +7,6 @@ type submarine struct {
 func NewSubmarine() submarine {
 	return submarine{symbol: "S"}
 }
+func (s submarine) Draw() {
 
-func (s submarine) OnDrawServer() string {
-	return s.symbol
 }

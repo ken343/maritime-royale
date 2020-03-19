@@ -8,6 +8,6 @@ func NewIsland() island {
 	return island{symbol: "i"}
 }
 
-func (s island) OnDrawServer() string {
-	return s.symbol
+func (s island) Draw() {
+
 }

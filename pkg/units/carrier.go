@@ -8,6 +8,6 @@ func NewCarrier() carrier {
 	return carrier{symbol: "C"}
 }
 
-func (s carrier) OnDrawServer() string {
-	return s.symbol
+func (s carrier) Draw() {
+
 }

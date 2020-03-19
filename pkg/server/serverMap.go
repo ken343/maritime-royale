@@ -15,9 +15,9 @@ import (
 //Square contains all the data about a specific square
 type Square struct {
 	xPos, yPos int
-	terrain    terrain.TerrainServer
-	unit       units.UnitServer
-	weather    weather.WeatherServer
+	terrain    terrain.Terrain
+	unit       units.Unit
+	weather    weather.Weather
 }
 
 var packet []byte
@@ -50,8 +50,8 @@ func init() {
 	var body = ""
 	for _, vx := range mapData {
 		var line = ""
-		for _, vy := range vx {
-			line = line + vy.terrain.OnDrawServer()
+		for range vx {
+			line = line + "T"
 		}
 		body = body + line + seperator
 	}

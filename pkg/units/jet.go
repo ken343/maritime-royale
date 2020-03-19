@@ -7,7 +7,6 @@ type jet struct {
 func NewJet() jet {
 	return jet{symbol: "J"}
 }
+func (s jet) Draw() {
 
-func (s jet) OnDrawServer() string {
-	return s.symbol
 }
