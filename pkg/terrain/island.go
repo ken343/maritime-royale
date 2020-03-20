@@ -1,11 +1,11 @@
 package terrain
 
 type island struct {
-	symbol string
+	Type string
 }
 
 func NewIsland() island {
-	return island{symbol: "i"}
+	return island{Type: "island"}
 }
 
 func (s island) Draw() {

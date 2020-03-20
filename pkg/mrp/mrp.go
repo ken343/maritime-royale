@@ -6,12 +6,12 @@ import (
 )
 
 type MRP struct {
-	Request string
-	Body    string
-	Footers []string
+	Request []byte
+	Body    []byte
+	Footers [][]byte
 }
 
-func NewMRP(reqType string, message string, footerlist ...string) MRP {
+func NewMRP(reqType []byte, message []byte, footerlist ...[]byte) MRP {
 
 	var packet = MRP{
 		Request: reqType,
@@ -28,26 +28,32 @@ func ReadMRP(packet []byte) (MRP, error) {
 
 	var splitMessage = strings.Split(message, "\n")
 
-	if splitMessage[len(splitMessage)-1] != "EOF" {
+	if splitMessage[len(splitMessage)-1] != "EOF" || len(splitMessage) < 3 {
 		return retMRP, errors.New("error: MRP message not complete or missing lines")
 	}
 
-	retMRP.Request = splitMessage[0]
-	retMRP.Body = splitMessage[1]
-	retMRP.Footers = splitMessage[2 : len(splitMessage)-1]
+	retMRP.Request = []byte(splitMessage[0])
+	retMRP.Body = []byte(splitMessage[1])
+	for _, v := range splitMessage[2 : len(splitMessage)-1] {
+		retMRP.Footers = append(retMRP.Footers, []byte(v))
+	}
 
 	return retMRP, nil
 }
 
 func MRPToByte(mrp MRP) []byte {
 
-	var fullString = mrp.Request + "\n" + mrp.Body
+	var fullString = mrp.Request
+	fullString = append(fullString, byte('\u000a'))
+	fullString = append(fullString, mrp.Body...)
 
 	for _, v := range mrp.Footers {
-		fullString = fullString + "\n" + v
+		fullString = append(fullString, byte('\u000a'))
+		fullString = append(fullString, v...)
 	}
 
-	fullString = fullString + "\n" + "EOF"
+	fullString = append(fullString, byte('\u000a'))
+	fullString = append(fullString, []byte("EOF")...)
 
 	var packet = []byte(fullString)
 

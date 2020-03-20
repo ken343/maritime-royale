@@ -1,11 +1,11 @@
 package terrain
 
 type water struct {
-	symbol string
+	Type string
 }
 
 func NewWater() water {
-	return water{symbol: "w"}
+	return water{Type: "water"}
 }
 func (s water) Draw() {
 
