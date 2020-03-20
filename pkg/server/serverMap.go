@@ -22,18 +22,18 @@ func init() {
 	for x := 0; x < MAPX; x++ {
 		var temp = map[int]square.Square{}
 		for y := 0; y < MAPY; y++ {
-			if ((x*50)+y)%2 == 0 {
+			if x%2 == 0 {
 				temp[y] =
 					square.Square{
 						XPos:    x,
 						YPos:    y,
-						Terrain: terrain.NewWater()}
+						Terrain: terrain.NewIslandServer()}
 			} else {
 				temp[y] =
 					square.Square{
 						XPos:    x,
 						YPos:    y,
-						Terrain: terrain.NewIsland()}
+						Terrain: terrain.NewEmpty()}
 			}
 		}
 		mapData[x] = temp

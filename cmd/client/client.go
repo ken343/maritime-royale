@@ -6,16 +6,37 @@ import (
 	"log"
 	"net"
 	"strings"
+	"time"
 
 	"github.com/JosephZoeller/maritime-royale/pkg/square"
+	"github.com/JosephZoeller/maritime-royale/pkg/terrain"
 	"github.com/veandco/go-sdl2/sdl"
 
 	"github.com/JosephZoeller/maritime-royale/pkg/mrp"
 )
 
+var renderer *sdl.Renderer
+var mapData = map[int]map[int]square.Square{}
+var renderCreated = make(chan string)
+
+const maxMapX int = 100
+const maxMapY int = 100
+
+func init() {
+	for x := 0; x < maxMapX; x++ {
+		temp := map[int]square.Square{}
+		for y := 0; y < maxMapY; y++ {
+			temp[y] = square.Square{
+				Terrain: terrain.NewEmpty()}
+		}
+		mapData[x] = temp
+	}
+}
+
 func main() {
-	go readMRP("localhost:8080")
-	graphics()
+	go graphics()
+	readMRP("localhost:8080")
+
 }
 
 func readMRP(address string) {
@@ -26,7 +47,7 @@ func readMRP(address string) {
 	}
 
 	var carryOver []byte
-
+	fmt.Println(<-renderCreated)
 	for {
 		var message = make([]byte, 0)
 		var newMRP mrp.MRP
@@ -36,7 +57,12 @@ func readMRP(address string) {
 
 		for {
 			var buf = make([]byte, 1024)
-			conn.Read(buf)
+			conn.SetReadDeadline(time.Now().Add(10 * time.Second))
+			_, err = conn.Read(buf)
+			if err != nil {
+				fmt.Println(err.Error())
+				return
+			}
 			for k, v := range buf {
 				if v == 0 {
 					buf = buf[0:k]
@@ -69,16 +95,23 @@ func readMRP(address string) {
 
 func handleMRP(newMRPList []mrp.MRP) {
 	for _, mRPItem := range newMRPList {
-		if string(mRPItem.Request) == "MAP" {
+		switch string(mRPItem.Request) {
+		case "MAP":
+
 			var genericSquare = square.SquareGeneric{}
+
 			json.Unmarshal(mRPItem.Body, &genericSquare)
+
 			typeMap := (genericSquare.Terrain.(map[string]interface{}))
+
 			typeStr := fmt.Sprintf("%v", typeMap["Type"])
+
 			switch typeStr {
-			case "water":
-
 			case "island":
-
+				mapData[genericSquare.XPos][genericSquare.YPos] = square.Square{
+					XPos:    genericSquare.XPos,
+					YPos:    genericSquare.YPos,
+					Terrain: terrain.NewIsland(renderer, genericSquare.XPos*64, genericSquare.YPos*64)}
 			}
 		}
 	}
@@ -101,12 +134,16 @@ func graphics() {
 	}
 	defer window.Destroy()
 
-	renderer, err := sdl.CreateRenderer(window, -1, sdl.RENDERER_ACCELERATED)
+	renderer, err = sdl.CreateRenderer(window, -1, sdl.RENDERER_ACCELERATED)
 	if err != nil {
 		fmt.Println("initializing renderer:", err)
 		return
 	}
 	defer renderer.Destroy()
+
+	renderCreated <- "Renderer Created Successfully"
+
+	sdl.Delay(uint32(2000))
 
 	for {
 		for event := sdl.PollEvent(); event != nil; event = sdl.PollEvent() {
@@ -119,8 +156,13 @@ func graphics() {
 		renderer.SetDrawColor(255, 255, 255, 255)
 		renderer.Clear()
 
-		//draw to renderer here
+		for _, line := range mapData {
+			for _, squareValue := range line {
+				squareValue.Terrain.Draw(renderer)
+			}
+		}
 
 		renderer.Present()
+
 	}
 }
