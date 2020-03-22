@@ -6,33 +6,36 @@ import (
 	"log"
 	"net"
 
+	"github.com/JosephZoeller/maritime-royale/pkg/grid"
+	
 	"github.com/JosephZoeller/maritime-royale/pkg/mrp"
-	"github.com/JosephZoeller/maritime-royale/pkg/square"
 
 	"github.com/JosephZoeller/maritime-royale/pkg/terrain"
 )
 
 //Square contains all the data about a specific square
 
-var mapData = map[int]map[int]square.Square{}
+var mapData = map[int]map[int]grid.Square{}
 
 const MAPX, MAPY = 50, 50
 
 func init() {
 	for x := 0; x < MAPX; x++ {
-		var temp = map[int]square.Square{}
+		var temp = map[int]grid.Square{}
 		for y := 0; y < MAPY; y++ {
 			if x%2 == 0 {
 				temp[y] =
-					square.Square{
-						XPos:    x,
-						YPos:    y,
+					grid.Square{
+						Coords: grid.Coordinate{
+							XPos: x,
+							YPos: y},
 						Terrain: terrain.NewIslandServer()}
 			} else {
 				temp[y] =
-					square.Square{
-						XPos:    x,
-						YPos:    y,
+					grid.Square{
+						Coords: grid.Coordinate{
+							XPos: x,
+							YPos: y},
 						Terrain: terrain.NewEmpty()}
 			}
 		}

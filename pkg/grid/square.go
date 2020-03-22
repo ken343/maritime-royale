@@ -1,4 +1,4 @@
-package square
+package grid
 
 import (
 	"github.com/JosephZoeller/maritime-royale/pkg/terrain"
@@ -7,15 +7,15 @@ import (
 )
 
 type Square struct {
-	XPos, YPos int
-	Terrain    terrain.Terrain
-	Unit       units.Unit
-	Weather    weather.Weather
+	Coords  Coordinate
+	Terrain terrain.Terrain
+	Unit    units.Unit
+	Weather weather.Weather
 }
 
 type SquareGeneric struct {
-	XPos, YPos int
-	Terrain    interface{}
-	Unit       interface{}
-	Weather    interface{}
+	Coords  Coordinate
+	Terrain interface{}
+	Unit    interface{}
+	Weather interface{}
 }

@@ -8,7 +8,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/JosephZoeller/maritime-royale/pkg/square"
+	"github.com/JosephZoeller/maritime-royale/pkg/grid"
 	"github.com/JosephZoeller/maritime-royale/pkg/terrain"
 	"github.com/veandco/go-sdl2/sdl"
 
@@ -16,7 +16,7 @@ import (
 )
 
 var renderer *sdl.Renderer
-var mapData = map[int]map[int]square.Square{}
+var mapData = map[int]map[int]grid.Square{}
 var renderCreated = make(chan string)
 
 const maxMapX int = 100
@@ -24,9 +24,9 @@ const maxMapY int = 100
 
 func init() {
 	for x := 0; x < maxMapX; x++ {
-		temp := map[int]square.Square{}
+		temp := map[int]grid.Square{}
 		for y := 0; y < maxMapY; y++ {
-			temp[y] = square.Square{
+			temp[y] = grid.Square{
 				Terrain: terrain.NewEmpty()}
 		}
 		mapData[x] = temp
@@ -98,7 +98,7 @@ func handleMRP(newMRPList []mrp.MRP) {
 		switch string(mRPItem.Request) {
 		case "MAP":
 
-			var genericSquare = square.SquareGeneric{}
+			var genericSquare = grid.SquareGeneric{}
 
 			json.Unmarshal(mRPItem.Body, &genericSquare)
 
@@ -108,10 +108,11 @@ func handleMRP(newMRPList []mrp.MRP) {
 
 			switch typeStr {
 			case "island":
-				mapData[genericSquare.XPos][genericSquare.YPos] = square.Square{
-					XPos:    genericSquare.XPos,
-					YPos:    genericSquare.YPos,
-					Terrain: terrain.NewIsland(renderer, genericSquare.XPos*64, genericSquare.YPos*64)}
+				mapData[genericSquare.Coords.XPos][genericSquare.Coords.YPos] = grid.Square{
+					Coords: grid.Coordinate{
+						XPos: genericSquare.Coords.XPos,
+						YPos: genericSquare.Coords.YPos},
+					Terrain: terrain.NewIsland(renderer, genericSquare.Coords.XPos*64, genericSquare.Coords.YPos*64)}
 			}
 		}
 	}
