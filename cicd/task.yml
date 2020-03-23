@@ -2,9 +2,12 @@
 platform: linux
 
 image_resource:
-    type: docker-image
-    source: {repository: ken343/sdlenv, tag: 0.0.1}
-    
-run:
-    path: echo
-    args: [the moon]
+  type: docker-image
+  source: 
+    repository: ken343/sdlenv
+    tag: 0.0.1
+
+input:
+- name: cicd
+
+run: ./cicd/howdy.sh

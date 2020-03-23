@@ -10,3 +10,5 @@ RUN apt-get update && apt-get -y install git \
 
 RUN go version
 RUN git version
+RUN echo $GOPATH
+RUN pwd
