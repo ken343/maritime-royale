@@ -25,4 +25,5 @@ jobs:
 
               
           run:
-              path: ./resource-git-mr/go/src/github.com/JosephZoeller/maritime-royale/cicd/build_server.sh
+              path: sh
+              agrs: [resource-git-mr/go/src/github.com/JosephZoeller/maritime-royale/cicd/build_server.sh]
