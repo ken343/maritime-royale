@@ -7,7 +7,6 @@ image_resource:
     repository: ken343/sdlenv
     tag: 0.0.1
 
-input:
-- name: cicd
 
-run: ./cicd/howdy.sh
+
+run: ./howdy.sh
