@@ -1,0 +1,28 @@
+---
+resources:
+    - name: resource-git-mr
+      type: git
+      source:
+        uri: https://github.com/JosephZoeller/maritime-royale.git
+        branch: dev
+
+jobs: 
+  - name: job-server-build
+    public: true
+    plan:
+      - get: resource-git-mr
+        trigger: true 
+      - task: howdy
+        config:
+          platform: linux
+          image_resource:
+              type: docker-image
+              source: {repository: ken343/sdlenv, tag: 0.0.1}
+          
+          inputs:
+            - name: resource-git-mr
+              path: go/src/github.com/JosephZoeller/maritime-royale
+
+              
+          run:
+              path: ./resource-git-mr/go/src/github.com/JosephZoeller/maritime-royale/cicd/build_server.sh

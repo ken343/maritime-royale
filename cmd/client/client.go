@@ -8,33 +8,19 @@ import (
 	"strings"
 	"time"
 
-	userwindow "github.com/JosephZoeller/maritime-royale/pkg/userWindow"
-
-	"github.com/JosephZoeller/maritime-royale/pkg/square"
+	"github.com/JosephZoeller/maritime-royale/pkg/screen"
 	"github.com/JosephZoeller/maritime-royale/pkg/terrain"
 	"github.com/veandco/go-sdl2/sdl"
 
 	"github.com/JosephZoeller/maritime-royale/pkg/mrp"
 )
 
-var mapData = map[int]map[int]square.Square{}
-
 var renderer *sdl.Renderer
+var terrainData = []terrain.Terrain{}
 var renderCreated = make(chan string)
 
-const maxMapX int = 100
-const maxMapY int = 100
-
-func init() {
-	for x := 0; x < maxMapX; x++ {
-		temp := map[int]square.Square{}
-		for y := 0; y < maxMapY; y++ {
-			temp[y] = square.Square{
-				Terrain: terrain.NewEmpty()}
-		}
-		mapData[x] = temp
-	}
-}
+const width int = 800
+const height int = 800
 
 func main() {
 	go graphics()
@@ -128,27 +114,16 @@ func handleMRP(newMRPList []mrp.MRP) {
 		//each one uniquely
 		switch string(mRPItem.Request) {
 		case "MAP":
-			//Since we now it is map data being sent, we create
-			//a generic square such that it can hold the json
-			//data.
-			var genericSquare = square.SquareGeneric{}
 
-			json.Unmarshal(mRPItem.Body, &genericSquare)
-
-			//We search for the type field in the terrain to know
-			//what kind of terrain to create.
-			typeMap := (genericSquare.Terrain.(map[string]interface{}))
-			typeStr := fmt.Sprintf("%v", typeMap["Type"])
-
-			//We loop through each available kind of terrain and
-			//definition here.
-			switch typeStr {
+			var tempTerrain map[string]interface{}
+			json.Unmarshal(mRPItem.Body, &tempTerrain)
+			switch tempTerrain["Type"] {
 			case "island":
-				mapData[genericSquare.XPos][genericSquare.YPos] = square.Square{
-					XPos:    genericSquare.XPos,
-					YPos:    genericSquare.YPos,
-					Terrain: terrain.NewIsland(renderer, genericSquare.XPos*64, genericSquare.YPos*64),
-				}
+				terrainData =
+					append(
+						terrainData,
+						terrain.NewIsland(renderer, int(tempTerrain["X"].(float64)), int(tempTerrain["Y"].(float64))),
+					)
 			}
 		}
 	}
@@ -161,29 +136,27 @@ func graphics() {
 		return
 	}
 
-	//Create a window
-	window, err := sdl.CreateWindow(
-		"Maritime Royale",
-		sdl.WINDOWPOS_UNDEFINED, sdl.WINDOWPOS_UNDEFINED,
-		800, 800,
-		sdl.WINDOW_OPENGL)
+	window, err :=
+		sdl.CreateWindow(
+			"Maritime Royale",
+			sdl.WINDOWPOS_UNDEFINED,
+			sdl.WINDOWPOS_UNDEFINED,
+			int32(width),
+			int32(height),
+			sdl.WINDOW_OPENGL,
+		)
 	if err != nil {
 		fmt.Println("initializing window:", err)
 		return
 	}
 	defer window.Destroy()
 
-	//This struct represents what the player can activly
-	//see through the window
-	plyView := userwindow.Window{
-		Xpos:   0,
-		Ypos:   0,
-		Width:  800,
-		Height: 800,
-	}
-
-	//Create a renderer object to handle our textures
-	renderer, err = sdl.CreateRenderer(window, -1, sdl.RENDERER_ACCELERATED)
+	renderer, err =
+		sdl.CreateRenderer(
+			window,
+			-1,
+			sdl.RENDERER_ACCELERATED,
+		)
 	if err != nil {
 		fmt.Println("initializing renderer:", err)
 		return
@@ -193,8 +166,13 @@ func graphics() {
 	//Tell the program the renderer is now functional
 	renderCreated <- "Renderer Created Successfully"
 
-	//Initial env delay to be ran once. Ensures startup
-	//on slow machines.
+	plrView := screen.Screen{
+		Xpos:   0,
+		Ypos:   0,
+		Width:  float64(width),
+		Height: float64(height),
+	}
+
 	sdl.Delay(uint32(2000))
 
 	for {
@@ -213,13 +191,8 @@ func graphics() {
 		renderer.SetDrawColor(255, 255, 255, 255)
 		renderer.Clear()
 
-		//We go through each tile of the map and draw each one
-		//In the future this needs to be edited so that only
-		//the elements the user can currently see are drawn.
-		for x := int(plyView.Xpos / 64); x < (plyView.Width+int(plyView.Xpos))/64; x++ {
-			for y := int(plyView.Ypos / 64); y < (plyView.Height+int(plyView.Ypos))/64; y++ {
-				mapData[x][y].Terrain.Draw(renderer)
-			}
+		for _, terrainSquare := range terrainData {
+			terrainSquare.Draw(renderer, 64, plrView)
 		}
 
 		//We take the renderer object and present it to the screen.
