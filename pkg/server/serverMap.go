@@ -7,43 +7,30 @@ import (
 	"net"
 
 	"github.com/JosephZoeller/maritime-royale/pkg/mrp"
-	"github.com/JosephZoeller/maritime-royale/pkg/square"
 
 	"github.com/JosephZoeller/maritime-royale/pkg/terrain"
 )
 
 //Square contains all the data about a specific square
 
-var mapData = map[int]map[int]square.Square{}
+var mapData = map[int]map[int]terrain.Terrain{}
 
 const MAPX, MAPY = 50, 50
 
 func init() {
 	for x := 0; x < MAPX; x++ {
-		var temp = map[int]square.Square{}
+		var temp = map[int]terrain.Terrain{}
 		for y := 0; y < MAPY; y++ {
-			if x%2 == 0 {
-				temp[y] =
-					square.Square{
-						XPos:    x,
-						YPos:    y,
-						Terrain: terrain.NewIslandServer()}
-			} else {
-				temp[y] =
-					square.Square{
-						XPos:    x,
-						YPos:    y,
-						Terrain: terrain.NewEmpty()}
-			}
+
+			temp[y] =
+				terrain.NewIslandServer(x, y)
+
 		}
 		mapData[x] = temp
 	}
-
 }
 
 func sendMap(conn net.Conn) {
-
-	count := 0
 
 	for x := 0; x < len(mapData); x++ {
 
@@ -61,5 +48,4 @@ func sendMap(conn net.Conn) {
 			conn.Write(packet)
 		}
 	}
-	fmt.Println(count)
 }

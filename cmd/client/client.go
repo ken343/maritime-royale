@@ -8,7 +8,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/JosephZoeller/maritime-royale/pkg/square"
+	"github.com/JosephZoeller/maritime-royale/pkg/screen"
 	"github.com/JosephZoeller/maritime-royale/pkg/terrain"
 	"github.com/veandco/go-sdl2/sdl"
 
@@ -16,22 +16,11 @@ import (
 )
 
 var renderer *sdl.Renderer
-var mapData = map[int]map[int]square.Square{}
+var terrainData = []terrain.Terrain{}
 var renderCreated = make(chan string)
 
-const maxMapX int = 100
-const maxMapY int = 100
-
-func init() {
-	for x := 0; x < maxMapX; x++ {
-		temp := map[int]square.Square{}
-		for y := 0; y < maxMapY; y++ {
-			temp[y] = square.Square{
-				Terrain: terrain.NewEmpty()}
-		}
-		mapData[x] = temp
-	}
-}
+const width int = 800
+const height int = 800
 
 func main() {
 	go graphics()
@@ -98,20 +87,15 @@ func handleMRP(newMRPList []mrp.MRP) {
 		switch string(mRPItem.Request) {
 		case "MAP":
 
-			var genericSquare = square.SquareGeneric{}
-
-			json.Unmarshal(mRPItem.Body, &genericSquare)
-
-			typeMap := (genericSquare.Terrain.(map[string]interface{}))
-
-			typeStr := fmt.Sprintf("%v", typeMap["Type"])
-
-			switch typeStr {
+			var tempTerrain map[string]interface{}
+			json.Unmarshal(mRPItem.Body, &tempTerrain)
+			switch tempTerrain["Type"] {
 			case "island":
-				mapData[genericSquare.XPos][genericSquare.YPos] = square.Square{
-					XPos:    genericSquare.XPos,
-					YPos:    genericSquare.YPos,
-					Terrain: terrain.NewIsland(renderer, genericSquare.XPos*64, genericSquare.YPos*64)}
+				terrainData =
+					append(
+						terrainData,
+						terrain.NewIsland(renderer, int(tempTerrain["X"].(float64)), int(tempTerrain["Y"].(float64))),
+					)
 			}
 		}
 	}
@@ -123,18 +107,27 @@ func graphics() {
 		return
 	}
 
-	window, err := sdl.CreateWindow(
-		"Maritime Royale",
-		sdl.WINDOWPOS_UNDEFINED, sdl.WINDOWPOS_UNDEFINED,
-		800, 800,
-		sdl.WINDOW_OPENGL)
+	window, err :=
+		sdl.CreateWindow(
+			"Maritime Royale",
+			sdl.WINDOWPOS_UNDEFINED,
+			sdl.WINDOWPOS_UNDEFINED,
+			int32(width),
+			int32(height),
+			sdl.WINDOW_OPENGL,
+		)
 	if err != nil {
 		fmt.Println("initializing window:", err)
 		return
 	}
 	defer window.Destroy()
 
-	renderer, err = sdl.CreateRenderer(window, -1, sdl.RENDERER_ACCELERATED)
+	renderer, err =
+		sdl.CreateRenderer(
+			window,
+			-1,
+			sdl.RENDERER_ACCELERATED,
+		)
 	if err != nil {
 		fmt.Println("initializing renderer:", err)
 		return
@@ -142,6 +135,13 @@ func graphics() {
 	defer renderer.Destroy()
 
 	renderCreated <- "Renderer Created Successfully"
+
+	plrView := screen.Screen{
+		Xpos:   0,
+		Ypos:   0,
+		Width:  float64(width),
+		Height: float64(height),
+	}
 
 	sdl.Delay(uint32(2000))
 
@@ -156,10 +156,8 @@ func graphics() {
 		renderer.SetDrawColor(255, 255, 255, 255)
 		renderer.Clear()
 
-		for _, line := range mapData {
-			for _, squareValue := range line {
-				squareValue.Terrain.Draw(renderer)
-			}
+		for _, terrainSquare := range terrainData {
+			terrainSquare.Draw(renderer, 64, plrView)
 		}
 
 		renderer.Present()
