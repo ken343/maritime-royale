@@ -21,10 +21,8 @@ func init() {
 	for x := 0; x < MAPX; x++ {
 		var temp = map[int]terrain.Terrain{}
 		for y := 0; y < MAPY; y++ {
-
-			temp[y] =
-				terrain.NewIslandServer(x, y)
-
+			terrainTemp := terrain.NewIslandServer(x, y)
+			temp[y] = &terrainTemp
 		}
 		mapData[x] = temp
 	}
