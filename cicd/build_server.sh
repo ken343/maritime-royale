@@ -14,4 +14,4 @@ ls -aR
 echo GO BUILD COMMAND-
 # cd /go/src/github.com/JosephZoeller/maritime-royale
 go get -v -u github.com/JosephZoeller/maritime-royale
-go build ./go/src/github.com/JospehZoeller/maritime-royale/cmd/server
+go build ./go/src/github.com/JospehZoeller/maritime-royale/cmd/server/server.go
