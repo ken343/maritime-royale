@@ -28,6 +28,7 @@ func main() {
 }
 
 func readMRP(address string) {
+	//dials connection to the gameplay server
 	conn, err := net.Dial("tcp", address)
 	if err != nil {
 		fmt.Println(err.Error())
@@ -35,12 +36,17 @@ func readMRP(address string) {
 	}
 
 	var carryOver []byte
+
+	//waits for a render object to be created and assigned
 	fmt.Println(<-renderCreated)
 	for {
 		var message = make([]byte, 0)
 		var newMRP mrp.MRP
 		var newMRPList []mrp.MRP
 
+		//if any message was not complete during the last pull
+		//from buffer, carryOver stores it. After nil assignment
+		//from above, carryOver fills in the beggining couple lines
 		message = carryOver
 
 		for {
@@ -51,6 +57,8 @@ func readMRP(address string) {
 				fmt.Println(err.Error())
 				return
 			}
+			//This is a simple loop used to remove all null chars
+			//from the buffer so that they aren't accidentally read
 			for k, v := range buf {
 				if v == 0 {
 					buf = buf[0:k]
@@ -58,11 +66,22 @@ func readMRP(address string) {
 				}
 			}
 
+			//we append the buffer to a message because it allows for
+			//us to pull a larger message if one packet of 1024 bytes
+			//was not enough. In that case buffer get overwrittin but
+			//message would not change.
 			message = append(message, buf...)
+			//Here we are checking for multiple MRP's in the buffer,
+			//This is useful incase we pull many small MRP's in one,
+			//1024 byte buffer.
 			messageString := strings.SplitAfter(string(message), "EOF")
 
 			for _, v := range messageString {
 
+				//We just check the segment to see if can be recongnised
+				//as a MRP packet. If so we add it to the growing list of
+				//MRP's and move on, else we assume the message is incomplete
+				//and add it to the carryOver message.
 				newMRP, err = mrp.ReadMRP([]byte(v))
 				if err == nil {
 					newMRPList = append(newMRPList, newMRP)
@@ -72,17 +91,26 @@ func readMRP(address string) {
 
 			}
 
+			//If we have found any MRP's during the above loop
+			//we are going to break out and begin processing them
+			//before moving back into the list and continue pulling
 			if len(newMRPList) != 0 {
 				break
 			}
 
 		}
+		//This handling function is what analyzes the MRP
+		//and decides what do.
 		handleMRP(newMRPList)
 	}
 }
 
 func handleMRP(newMRPList []mrp.MRP) {
+	//we begin by looping through each MRP
 	for _, mRPItem := range newMRPList {
+
+		//We check each kind of request so that we can handle
+		//each one uniquely
 		switch string(mRPItem.Request) {
 		case "MAP":
 
@@ -102,6 +130,7 @@ func handleMRP(newMRPList []mrp.MRP) {
 }
 
 func graphics() {
+	//Init the enviroment, drivers, graphics.
 	if err := sdl.Init(sdl.INIT_EVERYTHING); err != nil {
 		fmt.Println("initializing SDL:", err)
 		return
@@ -134,6 +163,7 @@ func graphics() {
 	}
 	defer renderer.Destroy()
 
+	//Tell the program the renderer is now functional
 	renderCreated <- "Renderer Created Successfully"
 
 	plrView := screen.NewScreen(
@@ -151,6 +181,9 @@ func graphics() {
 	for {
 		//t1 = time.Now().UnixNano()
 
+		//We set the background color and clear the screen,
+		//of all previous graphics. This ensures a clean draw
+		//every time
 		renderer.SetDrawColor(255, 255, 255, 255)
 		renderer.Clear()
 
@@ -160,6 +193,7 @@ func graphics() {
 			terrainSquare.Draw(renderer, int(plrView.Scale), plrView)
 		}
 
+		//We take the renderer object and present it to the screen.
 		renderer.Present()
 		//t2 = time.Now().UnixNano() - t1
 
