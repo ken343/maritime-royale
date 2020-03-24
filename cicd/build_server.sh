@@ -4,7 +4,8 @@
 set -e
 
 # This path should be GOPATH=/go/src/github.com/.... when using the golang container
-export GOPATH=$(pwd)/go
+export GOPATH=./go
+echo $GOPATH
 pwd
 ls -aR
 
