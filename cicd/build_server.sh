@@ -6,7 +6,7 @@ set -e
 # This path should be GOPATH=/go/src/github.com/.... when using the golang container
 export GOPATH=$(pwd)/go
 echo <--NEW GOPATH-->
-echo $GOPATH
+go env
 echo <--CURRENT DIRECTORY-->
 pwd
 echo <--Nested Folders-->
