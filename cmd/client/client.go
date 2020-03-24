@@ -6,7 +6,6 @@ import (
 	"log"
 	"net"
 	"strings"
-	"time"
 
 	"github.com/JosephZoeller/maritime-royale/pkg/screen"
 	"github.com/JosephZoeller/maritime-royale/pkg/terrain"
@@ -52,7 +51,7 @@ func readMRP(address string) {
 
 		for {
 			var buf = make([]byte, 1024)
-			conn.SetReadDeadline(time.Now().Add(10 * time.Second))
+			//conn.SetReadDeadline(time.Now().Add(10 * time.Second))
 			_, err = conn.Read(buf)
 			if err != nil {
 				fmt.Println(err.Error())
@@ -119,10 +118,11 @@ func handleMRP(newMRPList []mrp.MRP) {
 			json.Unmarshal(mRPItem.Body, &tempTerrain)
 			switch tempTerrain["Type"] {
 			case "island":
+				island := terrain.NewIsland(renderer, int(tempTerrain["X"].(float64)), int(tempTerrain["Y"].(float64)))
 				terrainData =
 					append(
 						terrainData,
-						terrain.NewIsland(renderer, int(tempTerrain["X"].(float64)), int(tempTerrain["Y"].(float64))),
+						&island,
 					)
 			}
 		}
@@ -166,24 +166,20 @@ func graphics() {
 	//Tell the program the renderer is now functional
 	renderCreated <- "Renderer Created Successfully"
 
-	plrView := screen.Screen{
-		Xpos:   0,
-		Ypos:   0,
-		Width:  float64(width),
-		Height: float64(height),
-	}
+	plrView := screen.NewScreen(
+		0,
+		0,
+		float64(width),
+		float64(height),
+	)
 
 	sdl.Delay(uint32(2000))
 
+	//var t1 int64
+	//var t2 int64
+
 	for {
-		//The even poller checks all events, here we are checking for
-		//the program to be closed
-		for event := sdl.PollEvent(); event != nil; event = sdl.PollEvent() {
-			switch event.(type) {
-			case *sdl.QuitEvent:
-				return
-			}
-		}
+		//t1 = time.Now().UnixNano()
 
 		//We set the background color and clear the screen,
 		//of all previous graphics. This ensures a clean draw
@@ -191,12 +187,16 @@ func graphics() {
 		renderer.SetDrawColor(255, 255, 255, 255)
 		renderer.Clear()
 
+		plrView.Update()
+
 		for _, terrainSquare := range terrainData {
-			terrainSquare.Draw(renderer, 64, plrView)
+			terrainSquare.Draw(renderer, int(plrView.Scale), plrView)
 		}
 
 		//We take the renderer object and present it to the screen.
 		renderer.Present()
+		//t2 = time.Now().UnixNano() - t1
 
+		//sdl.Delay(uint32(32000000-t2) / 1000000)
 	}
 }

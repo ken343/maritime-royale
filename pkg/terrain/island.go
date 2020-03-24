@@ -21,6 +21,7 @@ func NewIslandServer(x int, y int) (i island) {
 func NewIsland(renderer *sdl.Renderer, x int, y int) (i island) {
 	if texture == nil {
 		i.tex = textureFromBMP(renderer, "../../assets/sprites/inDev/sprites/water2.bmp")
+		texture = i.tex
 	} else {
 		i.tex = texture
 	}
@@ -32,20 +33,20 @@ func NewIsland(renderer *sdl.Renderer, x int, y int) (i island) {
 	return i
 }
 
-func (s island) Draw(renderer *sdl.Renderer, scale int, plrView screen.Screen) {
+func (s *island) Draw(renderer *sdl.Renderer, scale int, plrView screen.ViewPort) {
 	// Converting player coordinates to top left of sprite
 	x := s.X
 	y := s.Y
 
-	if plrView.Xpos > float64(x) || float64(x) > plrView.Width+plrView.Xpos {
+	if plrView.Xpos/float64(scale) > float64(x)+1 || float64(x)-1 > (plrView.Width-plrView.Xpos)/float64(scale) {
 		return
 	}
 
-	if plrView.Ypos > float64(y) || float64(y) > plrView.Height+plrView.Ypos {
+	if plrView.Ypos/float64(scale) > float64(y)+1 || float64(y)-1 > (plrView.Height-plrView.Ypos)/float64(scale) {
 		return
 	}
 
 	renderer.Copy(s.tex,
 		&sdl.Rect{X: 0, Y: 0, W: int32(scale), H: int32(scale)},
-		&sdl.Rect{X: int32(x) * int32(scale), Y: int32(y) * int32(scale), W: int32(scale), H: int32(scale)})
+		&sdl.Rect{X: int32(x)*int32(scale) + int32(plrView.Xpos), Y: int32(y)*int32(scale) + int32(plrView.Ypos), W: int32(scale), H: int32(scale)})
 }

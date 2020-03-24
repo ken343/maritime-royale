@@ -8,7 +8,7 @@ import (
 )
 
 type Terrain interface {
-	Draw(renderer *sdl.Renderer, scale int, plrView screen.Screen)
+	Draw(renderer *sdl.Renderer, scale int, plrView screen.ViewPort)
 }
 
 func textureFromBMP(renderer *sdl.Renderer, filename string) *sdl.Texture {
