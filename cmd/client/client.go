@@ -9,14 +9,19 @@ import (
 
 	"github.com/JosephZoeller/maritime-royale/pkg/screen"
 	"github.com/JosephZoeller/maritime-royale/pkg/terrain"
+	"github.com/JosephZoeller/maritime-royale/pkg/units"
 	"github.com/veandco/go-sdl2/sdl"
 
 	"github.com/JosephZoeller/maritime-royale/pkg/mrp"
 )
 
-var renderer *sdl.Renderer
 var terrainData = []terrain.Terrain{}
+var unitData = map[string]units.Unit{}
+
+var renderer *sdl.Renderer
 var renderCreated = make(chan string)
+
+var plrView = screen.ViewPort{}
 
 const width int = 800
 const height int = 800
@@ -117,14 +122,25 @@ func handleMRP(newMRPList []mrp.MRP) {
 			var tempTerrain map[string]interface{}
 			json.Unmarshal(mRPItem.Body, &tempTerrain)
 			switch tempTerrain["Type"] {
-			case "island":
-				island := terrain.NewIsland(renderer, int(tempTerrain["X"].(float64)), int(tempTerrain["Y"].(float64)))
+			case "water":
+				water := terrain.NewWater(int(tempTerrain["X"].(float64)), int(tempTerrain["Y"].(float64)))
 				terrainData =
 					append(
 						terrainData,
-						&island,
+						&water,
 					)
 			}
+
+		case "UNIT":
+
+			var tempUnit map[string]interface{}
+			json.Unmarshal(mRPItem.Body, &tempUnit)
+			switch tempUnit["Type"] {
+			case "destroyer":
+				destroyer := units.NewDestroyer(int(tempUnit["X"].(float64)), int(tempUnit["Y"].(float64)))
+				unitData[string(int(tempUnit["X"].(float64)))+","+string(int(tempUnit["Y"].(float64)))] = &destroyer
+			}
+
 		}
 	}
 }
@@ -166,7 +182,7 @@ func graphics() {
 	//Tell the program the renderer is now functional
 	renderCreated <- "Renderer Created Successfully"
 
-	plrView := screen.NewScreen(
+	plrView = screen.NewScreen(
 		0,
 		0,
 		float64(width),
@@ -175,11 +191,7 @@ func graphics() {
 
 	sdl.Delay(uint32(2000))
 
-	//var t1 int64
-	//var t2 int64
-
 	for {
-		//t1 = time.Now().UnixNano()
 
 		//We set the background color and clear the screen,
 		//of all previous graphics. This ensures a clean draw
@@ -193,10 +205,16 @@ func graphics() {
 			terrainSquare.Draw(renderer, int(plrView.Scale), plrView)
 		}
 
+		for _, unitSquare := range unitData {
+
+			unitSquare.Draw(renderer, int(plrView.Scale), plrView)
+
+		}
+
 		//We take the renderer object and present it to the screen.
 		renderer.Present()
-		//t2 = time.Now().UnixNano() - t1
 
-		//sdl.Delay(uint32(32000000-t2) / 1000000)
+		sdl.Delay(2)
+
 	}
 }
