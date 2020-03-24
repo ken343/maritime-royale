@@ -5,6 +5,9 @@ set -e
 
 # This path should be GOPATH=/go/src/github.com/.... when using the golang container
 export GOPATH=$(pwd)/go
+pwd
+ls -aR
+
 # cd /go/src/github.com/JosephZoeller/maritime-royale
 
 go build ./go/src/github.com/JospehZoeller/maritime-royale/cmd/server
