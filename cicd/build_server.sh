@@ -4,14 +4,20 @@
 # set -e
 
 # This path should be GOPATH=/go/src/github.com/.... when using the golang container
-export GOPATH=$(pwd)/go
+export GOPATH=$PWD/gopath
+export PATH=$PWD/gopath/bin:$PATH
+
 echo NEW GOPATH
 go env
 echo CURRENT DIRECTORY
 pwd
 echo Nested Folders
 ls -aR
-echo GO BUILD COMMAND-
+echo GO BUILD COMMAND
 # cd /go/src/github.com/JosephZoeller/maritime-royale
 go get -v -u github.com/JosephZoeller/maritime-royale
-go build ./go/src/github.com/JospehZoeller/maritime-royale/cmd/server/server.go
+cd gopath/src/github.com/JosephZoeller/maritime-royale/
+
+echo Directory after cd
+pwd
+go build ./cmd/server/server.go

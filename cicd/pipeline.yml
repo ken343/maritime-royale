@@ -21,9 +21,9 @@ jobs:
           # Need to add a new input for scripts
           inputs:
             - name: resource-git-mr
-              path: go/src/github.com/JosephZoeller/maritime-royale
+              path: gopath/src/github.com/JosephZoeller/maritime-royale
 
               
           run:
               path: sh
-              args: [go/src/github.com/JosephZoeller/maritime-royale/cicd/build_server.sh]
+              args: [gopath/src/github.com/JosephZoeller/maritime-royale/cicd/build_server.sh]
