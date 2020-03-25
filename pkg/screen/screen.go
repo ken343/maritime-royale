@@ -1,6 +1,8 @@
 package screen
 
 import (
+	"fmt"
+
 	"github.com/veandco/go-sdl2/sdl"
 )
 
@@ -11,6 +13,7 @@ type ViewPort struct {
 	Height float64
 	Scale  float64
 	Speed  float64
+	Mouse  Mouse
 }
 
 func NewScreen(Xpos float64, Ypos float64, Width float64, Height float64) (s ViewPort) {
@@ -28,6 +31,8 @@ func (s *ViewPort) Update() {
 
 	keys := sdl.GetKeyboardState()
 
+	s.Mouse.Xpos, s.Mouse.Ypos, s.Mouse.State = sdl.GetMouseState()
+
 	for event := sdl.PollEvent(); event != nil; event = sdl.PollEvent() {
 
 		switch eventType := event.(type) {
@@ -44,20 +49,24 @@ func (s *ViewPort) Update() {
 
 	if keys[sdl.SCANCODE_LEFT] == 1 {
 
-		s.Xpos += noramlizedSpeed
+		s.Xpos -= noramlizedSpeed
 
 	} else if keys[sdl.SCANCODE_RIGHT] == 1 {
 
-		s.Xpos -= noramlizedSpeed
+		s.Xpos += noramlizedSpeed
 
 	}
 	if keys[sdl.SCANCODE_UP] == 1 {
 
-		s.Ypos += noramlizedSpeed
+		s.Ypos -= noramlizedSpeed
 
 	} else if keys[sdl.SCANCODE_DOWN] == 1 {
 
-		s.Ypos -= noramlizedSpeed
+		s.Ypos += noramlizedSpeed
 
+	}
+
+	if s.Mouse.State == 1 {
+		fmt.Println(int((float64(s.Mouse.Xpos)+s.Xpos)/s.Scale), int((float64(s.Mouse.Ypos)+s.Ypos)/s.Scale))
 	}
 }
