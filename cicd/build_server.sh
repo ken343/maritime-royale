@@ -21,3 +21,4 @@ cd gopath/src/github.com/JosephZoeller/maritime-royale/
 echo Directory after cd
 pwd
 go build ./cmd/server/server.go
+ls
