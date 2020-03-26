@@ -46,22 +46,13 @@ func (s *ViewPort) Update() string {
 		case *sdl.KeyboardEvent:
 			if eventType.Keysym.Scancode == sdl.SCANCODE_ESCAPE {
 				return "EXIT"
-			} else if eventType.State == sdl.RELEASED {
-				keyCode := string(eventType.Keysym.Sym)
-				switch keyCode {
-				default:
-					fmt.Println(keyCode)
-				}
 			}
 
 		// selecting via mouse
 		case *sdl.MouseButtonEvent:
 			if eventType.State == sdl.RELEASED {
-				fmt.Printf("{%d, %d}\n", eventType.X, eventType.Y)
 				if eventType.Button == sdl.BUTTON_LEFT {
-					//mouseOnReleaseLeft(eventType.X, eventType.Y, renderer, waterTileSurface)
-				} else {
-					//mouseOnReleaseRight()
+					fmt.Println(int((float64(s.Mouse.Xpos)+s.Xpos)/s.Scale), int((float64(s.Mouse.Ypos)+s.Ypos)/s.Scale))
 				}
 			}
 
@@ -92,10 +83,6 @@ func (s *ViewPort) Update() string {
 
 		s.Ypos += noramlizedSpeed
 
-	}
-
-	if s.Mouse.State == 1 {
-		fmt.Println(int((float64(s.Mouse.Xpos)+s.Xpos)/s.Scale), int((float64(s.Mouse.Ypos)+s.Ypos)/s.Scale))
 	}
 
 	return ""
