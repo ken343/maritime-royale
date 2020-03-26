@@ -5,7 +5,9 @@ import (
 	"fmt"
 	"log"
 	"net"
+	"strconv"
 	"strings"
+	"time"
 
 	"github.com/JosephZoeller/maritime-royale/pkg/screen"
 	"github.com/JosephZoeller/maritime-royale/pkg/terrain"
@@ -39,6 +41,8 @@ func readMRP(address string) {
 		fmt.Println(err.Error())
 		log.Panic()
 	}
+
+	go returnPing(conn)
 
 	var carryOver []byte
 
@@ -106,11 +110,11 @@ func readMRP(address string) {
 		}
 		//This handling function is what analyzes the MRP
 		//and decides what do.
-		handleMRP(newMRPList)
+		handleMRP(newMRPList, conn)
 	}
 }
 
-func handleMRP(newMRPList []mrp.MRP) {
+func handleMRP(newMRPList []mrp.MRP, conn net.Conn) {
 	//we begin by looping through each MRP
 	for _, mRPItem := range newMRPList {
 
@@ -141,8 +145,23 @@ func handleMRP(newMRPList []mrp.MRP) {
 				unitData[string(int(tempUnit["X"].(float64)))+","+string(int(tempUnit["Y"].(float64)))] = &destroyer
 			}
 
+		case "PING":
+			delay, _ := strconv.Atoi(string(mRPItem.Body))
+			delay = int(time.Now().UnixNano()/int64(time.Millisecond)) - delay
+			fmt.Println("Ping:", delay, "ms")
+			go returnPing(conn)
 		}
 	}
+}
+
+func returnPing(conn net.Conn) {
+	time.Sleep(5 * time.Second)
+	myMRP := mrp.NewMRP([]byte("PING"), []byte("this is a ping"), []byte("/"))
+	conn.Write(mrp.MRPToByte(myMRP))
+
+	//This needs to be in its own call at some point
+	myMRP = mrp.NewMRP([]byte("MAP"), []byte("Gimme dat fuckin map"), []byte("/"))
+	conn.Write(mrp.MRPToByte(myMRP))
 }
 
 func graphics() {
