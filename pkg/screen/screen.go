@@ -26,7 +26,8 @@ func NewScreen(Xpos float64, Ypos float64, Width float64, Height float64) (s Vie
 	return s
 }
 
-func (s *ViewPort) Update() {
+// Could theoretically return MRP requests, or data that would initiate the process for a request.
+func (s *ViewPort) Update() string {
 	noramlizedSpeed := s.Scale * s.Speed
 
 	keys := sdl.GetKeyboardState()
@@ -36,6 +37,33 @@ func (s *ViewPort) Update() {
 	for event := sdl.PollEvent(); event != nil; event = sdl.PollEvent() {
 
 		switch eventType := event.(type) {
+
+		// exit case
+		case *sdl.QuitEvent:
+			return "EXIT"
+
+		// escape key exit case, selecting via keyboard
+		case *sdl.KeyboardEvent:
+			if eventType.Keysym.Scancode == sdl.SCANCODE_ESCAPE {
+				return "EXIT"
+			} else if eventType.State == sdl.RELEASED {
+				keyCode := string(eventType.Keysym.Sym)
+				switch keyCode {
+				default:
+					fmt.Println(keyCode)
+				}
+			}
+
+		// selecting via mouse
+		case *sdl.MouseButtonEvent:
+			if eventType.State == sdl.RELEASED {
+				fmt.Printf("{%d, %d}\n", eventType.X, eventType.Y)
+				if eventType.Button == sdl.BUTTON_LEFT {
+					//mouseOnReleaseLeft(eventType.X, eventType.Y, renderer, waterTileSurface)
+				} else {
+					//mouseOnReleaseRight()
+				}
+			}
 
 		case *sdl.MouseWheelEvent:
 			if eventType.Y > 0 {
@@ -69,4 +97,6 @@ func (s *ViewPort) Update() {
 	if s.Mouse.State == 1 {
 		fmt.Println(int((float64(s.Mouse.Xpos)+s.Xpos)/s.Scale), int((float64(s.Mouse.Ypos)+s.Ypos)/s.Scale))
 	}
+
+	return ""
 }
