@@ -1,6 +1,10 @@
 package terrain
 
-import "github.com/veandco/go-sdl2/sdl"
+import (
+	"github.com/JosephZoeller/maritime-royale/pkg/graphics"
+	"github.com/JosephZoeller/maritime-royale/pkg/screen"
+	"github.com/veandco/go-sdl2/sdl"
+)
 
 type island struct {
 	Type string
@@ -9,18 +13,11 @@ type island struct {
 	X, Y int
 }
 
-var texture *sdl.Texture = nil
+var islandTexture *sdl.Texture = nil
 
-func NewIslandServer() (i island) {
-	return island{Type: "island"}
-}
+func NewIsland(x int, y int) (i island) {
+	i.tex = nil
 
-func NewIsland(renderer *sdl.Renderer, x int, y int) (i island) {
-	if texture == nil {
-		i.tex = textureFromBMP(renderer, "../../assets/sprites/inDev/sprites/water2.bmp")
-	} else {
-		i.tex = texture
-	}
 	i.X = x
 	i.Y = y
 
@@ -29,14 +26,13 @@ func NewIsland(renderer *sdl.Renderer, x int, y int) (i island) {
 	return i
 }
 
-const playerSize = 64
-
-func (s island) Draw(renderer *sdl.Renderer) {
-	// Converting player coordinates to top left of sprite
-	x := s.X
-	y := s.Y
-
-	renderer.Copy(s.tex,
-		&sdl.Rect{X: 0, Y: 0, W: playerSize, H: playerSize},
-		&sdl.Rect{X: int32(x), Y: int32(y), W: playerSize, H: playerSize})
+func (s *island) Draw(renderer *sdl.Renderer, scale int, plrView screen.ViewPort) {
+	if renderer == nil {
+	} else if islandTexture == nil {
+		s.tex = textureFromBMP(renderer, "../../assets/sprites/inDev/sprites/water2.bmp")
+		islandTexture = s.tex
+	} else {
+		s.tex = islandTexture
+	}
+	graphics.DrawSquare(renderer, scale, s.X, s.Y, plrView, islandTexture)
 }

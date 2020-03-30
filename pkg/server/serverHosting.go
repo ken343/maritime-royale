@@ -36,7 +36,7 @@ func session(l net.Listener, newConnSignal chan string) {
 
 	closeConnection := make(chan string)
 
-	go sendMap(conn)
+	go readMRP(conn)
 
 	fmt.Println(<-closeConnection)
 }
