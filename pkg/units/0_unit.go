@@ -3,12 +3,14 @@ package units
 import (
 	"fmt"
 
+	"github.com/JosephZoeller/maritime-royale/pkg/mrp"
 	"github.com/JosephZoeller/maritime-royale/pkg/screen"
 	"github.com/veandco/go-sdl2/sdl"
 )
 
 type Unit interface {
 	Draw(renderer *sdl.Renderer, scale int, plrView screen.ViewPort)
+	Move(dest string) (mrp.MRP, bool)
 }
 
 func textureFromBMP(renderer *sdl.Renderer, filename string) *sdl.Texture {

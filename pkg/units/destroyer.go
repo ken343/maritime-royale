@@ -1,7 +1,11 @@
 package units
 
 import (
+	"strconv"
+	"strings"
+
 	"github.com/JosephZoeller/maritime-royale/pkg/graphics"
+	"github.com/JosephZoeller/maritime-royale/pkg/mrp"
 	"github.com/JosephZoeller/maritime-royale/pkg/screen"
 	"github.com/veandco/go-sdl2/sdl"
 )
@@ -35,4 +39,18 @@ func (s *destroyer) Draw(renderer *sdl.Renderer, scale int, plrView screen.ViewP
 		s.tex = destroyerTexture
 	}
 	graphics.DrawSquare(renderer, scale, s.X, s.Y, plrView, destroyerTexture)
+}
+
+func (s *destroyer) Move(dest string) (mrp.MRP, bool) {
+
+	pos := strings.Split(dest, ",")
+	xPos, _ := strconv.Atoi(pos[0])
+	yPos, _ := strconv.Atoi(pos[1])
+
+	myMRP := mrp.NewMRP([]byte("UNIT"), []byte(strconv.Itoa(s.X)+","+strconv.Itoa(s.Y)), []byte(dest))
+
+	s.X = xPos
+	s.Y = yPos
+
+	return myMRP, true
 }

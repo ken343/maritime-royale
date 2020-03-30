@@ -29,19 +29,20 @@ const width int = 800
 const height int = 800
 
 func main() {
-	go graphics()
-	readMRP("localhost:8080")
-
-}
-
-func readMRP(address string) {
 	//dials connection to the gameplay server
-	conn, err := net.Dial("tcp", address)
+	conn, err := net.Dial("tcp", "localhost:8080")
 	if err != nil {
 		fmt.Println(err.Error())
 		log.Panic()
 	}
 
+	go readMRP(conn)
+	graphics(conn)
+
+}
+
+func readMRP(conn net.Conn) {
+	var err error
 	go returnPing(conn)
 
 	var carryOver []byte
@@ -142,8 +143,12 @@ func handleMRP(newMRPList []mrp.MRP, conn net.Conn) {
 			switch tempUnit["Type"] {
 			case "destroyer":
 				destroyer := units.NewDestroyer(int(tempUnit["X"].(float64)), int(tempUnit["Y"].(float64)))
-				unitData[string(int(tempUnit["X"].(float64)))+","+string(int(tempUnit["Y"].(float64)))] = &destroyer
+				unitData[strconv.Itoa(int(tempUnit["X"].(float64)))+","+strconv.Itoa(int(tempUnit["Y"].(float64)))] = &destroyer
 			}
+
+		case "UNITC":
+			unitData = map[string]units.Unit{}
+			fmt.Println("clear")
 
 		case "PING":
 			delay, _ := strconv.Atoi(string(mRPItem.Body))
@@ -151,6 +156,7 @@ func handleMRP(newMRPList []mrp.MRP, conn net.Conn) {
 			fmt.Println("Ping:", delay, "ms")
 			go returnPing(conn)
 		}
+
 	}
 }
 
@@ -164,7 +170,7 @@ func returnPing(conn net.Conn) {
 	conn.Write(mrp.MRPToByte(myMRP))
 }
 
-func graphics() {
+func graphics(conn net.Conn) {
 	//Init the enviroment, drivers, graphics.
 	if err := sdl.Init(sdl.INIT_EVERYTHING); err != nil {
 		fmt.Println("initializing SDL:", err)
@@ -210,6 +216,8 @@ func graphics() {
 
 	sdl.Delay(uint32(2000))
 
+	var isSelected string = ""
+
 	for {
 
 		//We set the background color and clear the screen,
@@ -218,7 +226,21 @@ func graphics() {
 		renderer.SetDrawColor(255, 255, 255, 255)
 		renderer.Clear()
 
-		plrView.Update()
+		unitCommands := plrView.Update()
+
+		for _, v := range unitCommands {
+			if plrView.Mouse.State == 1 {
+				if isSelected == "" && unitData[v] != nil {
+					isSelected = v
+				} else if isSelected != "" {
+					myMRP, isPossible := unitData[isSelected].Move(v)
+					if isPossible {
+						conn.Write(mrp.MRPToByte(myMRP))
+					}
+					isSelected = ""
+				}
+			}
+		}
 
 		for _, terrainSquare := range terrainData {
 			terrainSquare.Draw(renderer, int(plrView.Scale), plrView)

@@ -26,7 +26,7 @@ func init() {
 	for x := 0; x < MAPX; x++ {
 		for y := 0; y < MAPY; y++ {
 			terrainSquare := terrain.NewWater(x, y)
-			terrainData[string(x)+","+string(y)] = &terrainSquare
+			terrainData[strconv.Itoa(x)+","+strconv.Itoa(y)] = &terrainSquare
 		}
 	}
 	unitSquare := units.NewDestroyer(5, 8)
@@ -124,6 +124,16 @@ func handleMRP(newMRPList []mrp.MRP, conn net.Conn) {
 
 			sendMap(conn)
 
+		case "UNIT":
+
+			if unitData[string(mRPItem.Body)] != nil {
+				_, isPossible := unitData[string(mRPItem.Body)].Move(string(mRPItem.Footers[0]))
+				if isPossible {
+					unitData[string(mRPItem.Footers[0])] = unitData[string(mRPItem.Body)]
+					unitData[string(mRPItem.Body)] = nil
+				}
+			}
+
 		}
 	}
 }
@@ -144,6 +154,10 @@ func sendMap(conn net.Conn) {
 
 		conn.Write(packet)
 	}
+
+	var sendingMRP = mrp.NewMRP([]byte("UNITC"), []byte("clear"), []byte("/"))
+	packet := mrp.MRPToByte(sendingMRP)
+	conn.Write(packet)
 
 	for _, v := range unitData {
 		body, err := json.Marshal(v)

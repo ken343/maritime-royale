@@ -1,7 +1,7 @@
 package screen
 
 import (
-	"fmt"
+	"strconv"
 
 	"github.com/veandco/go-sdl2/sdl"
 )
@@ -27,7 +27,8 @@ func NewScreen(Xpos float64, Ypos float64, Width float64, Height float64) (s Vie
 }
 
 // Could theoretically return MRP requests, or data that would initiate the process for a request.
-func (s *ViewPort) Update() string {
+func (s *ViewPort) Update() (unitCommands []string) {
+
 	noramlizedSpeed := s.Scale * s.Speed
 
 	keys := sdl.GetKeyboardState()
@@ -40,19 +41,18 @@ func (s *ViewPort) Update() string {
 
 		// exit case
 		case *sdl.QuitEvent:
-			return "EXIT"
 
 		// escape key exit case, selecting via keyboard
 		case *sdl.KeyboardEvent:
 			if eventType.Keysym.Scancode == sdl.SCANCODE_ESCAPE {
-				return "EXIT"
+
 			}
 
 		// selecting via mouse
 		case *sdl.MouseButtonEvent:
 			if eventType.State == sdl.RELEASED {
 				if eventType.Button == sdl.BUTTON_LEFT {
-					fmt.Println(int((float64(s.Mouse.Xpos)+s.Xpos)/s.Scale), int((float64(s.Mouse.Ypos)+s.Ypos)/s.Scale))
+					unitCommands = append(unitCommands, strconv.Itoa(int((float64(s.Mouse.Xpos)+s.Xpos)/s.Scale))+","+strconv.Itoa(int((float64(s.Mouse.Ypos)+s.Ypos)/s.Scale)))
 				}
 			}
 
@@ -85,5 +85,5 @@ func (s *ViewPort) Update() string {
 
 	}
 
-	return ""
+	return unitCommands
 }
