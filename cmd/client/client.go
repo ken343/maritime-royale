@@ -166,7 +166,7 @@ func returnPing(conn net.Conn) {
 	conn.Write(mrp.MRPToByte(myMRP))
 
 	//This needs to be in its own call at some point
-	myMRP = mrp.NewMRP([]byte("MAP"), []byte("Gimme dat fuckin map"), []byte("/"))
+	myMRP = mrp.NewMRP([]byte("MAP"), []byte("Gimme dat map"), []byte("/"))
 	conn.Write(mrp.MRPToByte(myMRP))
 }
 

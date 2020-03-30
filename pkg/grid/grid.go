@@ -1,13 +1,15 @@
 package grid
 
+/*
 import (
 	"github.com/JosephZoeller/maritime-royale/pkg/terrain"
 	"github.com/JosephZoeller/maritime-royale/pkg/units"
 	"github.com/veandco/go-sdl2/sdl"
 )
-
+*/
 var gridData [][]Square
 
+/*
 func FakeInitGridDataDEMO(renderer *sdl.Renderer) {
 	gridData = make([][]Square, 10)
 	for i := range gridData {
@@ -26,7 +28,7 @@ func FakeInitGridDataDEMO(renderer *sdl.Renderer) {
 	p := &gridData[4][5]
 	p.Unit = units.NewDestroyer()
 }
-
+*/
 func GetGridData() [][]Square {
 	return gridData
 }
