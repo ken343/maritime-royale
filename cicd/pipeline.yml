@@ -18,11 +18,12 @@ jobs:
           image_resource:
               type: docker-image
               source: {repository: ken343/sdlenv, tag: 0.0.1}
-          
+          # Need to add a new input for scripts
           inputs:
             - name: resource-git-mr
-              path: go/src/github.com/JosephZoeller/maritime-royale
+              path: gopath/src/github.com/JosephZoeller/maritime-royale
 
               
           run:
-              path: ./resource-git-mr/go/src/github.com/JosephZoeller/maritime-royale/cicd/build_server.sh
+              path: sh
+              args: [gopath/src/github.com/JosephZoeller/maritime-royale/cicd/build_server.sh]
