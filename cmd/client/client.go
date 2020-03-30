@@ -9,11 +9,7 @@ import (
 	"strings"
 	"time"
 
-<<<<<<< HEAD
-	"github.com/JosephZoeller/maritime-royale/pkg/grid"
-=======
 	"github.com/JosephZoeller/maritime-royale/pkg/screen"
->>>>>>> joseph_Dev
 	"github.com/JosephZoeller/maritime-royale/pkg/terrain"
 	"github.com/JosephZoeller/maritime-royale/pkg/units"
 	"github.com/veandco/go-sdl2/sdl"
@@ -25,29 +21,12 @@ var terrainData = []terrain.Terrain{}
 var unitData = map[string]units.Unit{}
 
 var renderer *sdl.Renderer
-<<<<<<< HEAD
-var mapData = map[int]map[int]grid.Square{}
-=======
->>>>>>> joseph_Dev
 var renderCreated = make(chan string)
 
 var plrView = screen.ViewPort{}
 
-<<<<<<< HEAD
-func init() {
-	for x := 0; x < maxMapX; x++ {
-		temp := map[int]grid.Square{}
-		for y := 0; y < maxMapY; y++ {
-			temp[y] = grid.Square{
-				Terrain: terrain.NewEmpty()}
-		}
-		mapData[x] = temp
-	}
-}
-=======
 const width int = 800
 const height int = 800
->>>>>>> joseph_Dev
 
 func main() {
 	//dials connection to the gameplay server
@@ -145,9 +124,6 @@ func handleMRP(newMRPList []mrp.MRP, conn net.Conn) {
 		switch string(mRPItem.Request) {
 		case "MAP":
 
-<<<<<<< HEAD
-			var genericSquare = grid.SquareGeneric{}
-=======
 			var tempTerrain map[string]interface{}
 			json.Unmarshal(mRPItem.Body, &tempTerrain)
 			switch tempTerrain["Type"] {
@@ -159,7 +135,6 @@ func handleMRP(newMRPList []mrp.MRP, conn net.Conn) {
 						&water,
 					)
 			}
->>>>>>> joseph_Dev
 
 		case "UNIT":
 
@@ -175,22 +150,11 @@ func handleMRP(newMRPList []mrp.MRP, conn net.Conn) {
 			unitData = map[string]units.Unit{}
 			fmt.Println("clear")
 
-<<<<<<< HEAD
-			switch typeStr {
-			case "island":
-				mapData[genericSquare.Coords.XPos][genericSquare.Coords.YPos] = grid.Square{
-					Coords: grid.Coordinate{
-						XPos: genericSquare.Coords.XPos,
-						YPos: genericSquare.Coords.YPos},
-					Terrain: terrain.NewIsland(renderer, genericSquare.Coords.XPos*64, genericSquare.Coords.YPos*64)}
-			}
-=======
 		case "PING":
 			delay, _ := strconv.Atoi(string(mRPItem.Body))
 			delay = int(time.Now().UnixNano()/int64(time.Millisecond)) - delay
 			fmt.Println("Ping:", delay, "ms")
 			go returnPing(conn)
->>>>>>> joseph_Dev
 		}
 
 	}

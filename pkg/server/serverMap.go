@@ -9,53 +9,24 @@ import (
 	"strings"
 	"time"
 
-	"github.com/JosephZoeller/maritime-royale/pkg/grid"
-	
 	"github.com/JosephZoeller/maritime-royale/pkg/mrp"
-<<<<<<< HEAD
-=======
 	"github.com/JosephZoeller/maritime-royale/pkg/units"
->>>>>>> joseph_Dev
 
 	"github.com/JosephZoeller/maritime-royale/pkg/terrain"
 )
 
 //Square contains all the data about a specific square
 
-<<<<<<< HEAD
-var mapData = map[int]map[int]grid.Square{}
-=======
 var terrainData = map[string]terrain.Terrain{}
 var unitData = map[string]units.Unit{}
->>>>>>> joseph_Dev
 
 const MAPX, MAPY = 50, 50
 
 func init() {
 	for x := 0; x < MAPX; x++ {
-<<<<<<< HEAD
-		var temp = map[int]grid.Square{}
-		for y := 0; y < MAPY; y++ {
-			if x%2 == 0 {
-				temp[y] =
-					grid.Square{
-						Coords: grid.Coordinate{
-							XPos: x,
-							YPos: y},
-						Terrain: terrain.NewIslandServer()}
-			} else {
-				temp[y] =
-					grid.Square{
-						Coords: grid.Coordinate{
-							XPos: x,
-							YPos: y},
-						Terrain: terrain.NewEmpty()}
-			}
-=======
 		for y := 0; y < MAPY; y++ {
 			terrainSquare := terrain.NewWater(x, y)
 			terrainData[strconv.Itoa(x)+","+strconv.Itoa(y)] = &terrainSquare
->>>>>>> joseph_Dev
 		}
 	}
 	unitSquare := units.NewDestroyer(5, 8)
