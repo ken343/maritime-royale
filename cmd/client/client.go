@@ -163,11 +163,11 @@ func handleMRP(newMRPList []mrp.MRP, conn net.Conn) {
 func returnPing(conn net.Conn) {
 	time.Sleep(5 * time.Second)
 	myMRP := mrp.NewMRP([]byte("PING"), []byte("this is a ping"), []byte("/"))
-	conn.Write(mrp.MRPToByte(myMRP))
+	conn.Write(mrp.ToByte(myMRP))
 
 	//This needs to be in its own call at some point
 	myMRP = mrp.NewMRP([]byte("MAP"), []byte("Gimme dat fuckin map"), []byte("/"))
-	conn.Write(mrp.MRPToByte(myMRP))
+	conn.Write(mrp.ToByte(myMRP))
 }
 
 func graphics(conn net.Conn) {
@@ -235,7 +235,7 @@ func graphics(conn net.Conn) {
 				} else if isSelected != "" {
 					myMRP, isPossible := unitData[isSelected].Move(v)
 					if isPossible {
-						conn.Write(mrp.MRPToByte(myMRP))
+						conn.Write(mrp.ToByte(myMRP))
 					}
 					isSelected = ""
 				}

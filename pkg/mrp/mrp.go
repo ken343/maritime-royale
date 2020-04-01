@@ -1,3 +1,4 @@
+// Package mrp defines custom communcation protocol and related functions.
 package mrp
 
 import (
@@ -5,12 +6,16 @@ import (
 	"strings"
 )
 
+// MRP (Maritime Royale Packet) is a custom message protocol used between the server and client
+// applications to communicate game state information.
 type MRP struct {
 	Request []byte
 	Body    []byte
 	Footers [][]byte
 }
 
+// NewMRP creates a new MRP message that consists of a request verb, message, and an array of footers.
+// There is currently no validation of the type of data that can be placed in an MRP message.
 func NewMRP(reqType []byte, message []byte, footerlist ...[]byte) MRP {
 
 	var packet = MRP{
@@ -21,6 +26,7 @@ func NewMRP(reqType []byte, message []byte, footerlist ...[]byte) MRP {
 	return packet
 }
 
+// ReadMRP parses a MPR byte packet into a proper Go struct.
 func ReadMRP(packet []byte) (MRP, error) {
 	var retMRP = MRP{}
 
@@ -41,7 +47,9 @@ func ReadMRP(packet []byte) (MRP, error) {
 	return retMRP, nil
 }
 
-func MRPToByte(mrp MRP) []byte {
+// ToByte takes a Go MRP construct and translates to a byte slice
+// that can be communcated through a tcp connection.
+func ToByte(mrp MRP) []byte {
 
 	var fullString = mrp.Request
 	fullString = append(fullString, byte('\u000a'))
