@@ -2,13 +2,19 @@
 // for accessing and changing that state.
 // State will be necessary for keeping track of the game's phases
 // and map data. The games phases should be able to lock what actions
-// can be taken by players.
+// can be taken by players. This data will be expected to be synced between the server
+// and the client periodically.
 package game
 
+import (
+	"github.com/ken343/maritime-royale/pkg/terrain"
+	"github.com/ken343/maritime-royale/pkg/tiles"
+	"github.com/ken343/maritime-royale/pkg/units"
+)
 // Init will set all initial values for this packge when it is imported.
 func Init() {
 	// TODO: Add shotclock initialization here when adding that function.
-
+	// TODO: Initialize Tiles to all water and empy units and beginning of game.
 	// always have the admin option available every game for now.
 	Players["admin"] = Player{Name: "admin", IsAdmin: true, IsFinished: false}
 
@@ -34,6 +40,7 @@ var (
 
 	// Players is a Go map of different player objects, where keys are represented by user names.
 	Players map[string]Player = make(map[string]Player, 0)
+
 )
 
 // Player object represents the player as having a name and privilege that represents 
@@ -50,3 +57,15 @@ type Dimensions struct {
 	MapY int
 }
 
+type Tiles struct {
+	mterrain map[string]terrain.Terrain
+	munit map[string]units.Unit
+}
+
+func (*t Tiles) GetTerrain(coordinate string) terrain.Terrain {
+	return t.mterrain[coordinate]
+}
+
+func (*t Tiles) GetUnit(coordinate string) units.Unit {
+	return t.munit[coordinate]
+}

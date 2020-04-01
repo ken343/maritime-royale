@@ -13,9 +13,11 @@ import (
 	"github.com/ken343/maritime-royale/pkg/units"
 
 	"github.com/ken343/maritime-royale/pkg/terrain"
+	_ "github.com/ken343/maritime-royale/pkg/tile"
 )
 
 //Square contains all the data about a specific square
+// These values are now given in game package.
 
 var terrainData = map[string]terrain.Terrain{}
 var unitData = map[string]units.Unit{}
@@ -118,7 +120,7 @@ func handleMRP(newMRPList []mrp.MRP, conn net.Conn) {
 				[]byte(strconv.Itoa(int(time.Now().UnixNano()/int64(time.Millisecond)))),
 				[]byte("/"),
 			)
-			conn.Write(mrp.MRPToByte(myMRP))
+			conn.Write(mrp.ToByte(myMRP))
 
 		case "MAP":
 
@@ -150,13 +152,13 @@ func sendMap(conn net.Conn) {
 
 		var sendingMRP = mrp.NewMRP([]byte("MAP"), body, []byte("/"))
 
-		packet := mrp.MRPToByte(sendingMRP)
+		packet := mrp.ToByte(sendingMRP)
 
 		conn.Write(packet)
 	}
 
 	var sendingMRP = mrp.NewMRP([]byte("UNITC"), []byte("clear"), []byte("/"))
-	packet := mrp.MRPToByte(sendingMRP)
+	packet := mrp.ToByte(sendingMRP)
 	conn.Write(packet)
 
 	for _, v := range unitData {
@@ -168,7 +170,7 @@ func sendMap(conn net.Conn) {
 
 		var sendingMRP = mrp.NewMRP([]byte("UNIT"), body, []byte("/"))
 
-		packet := mrp.MRPToByte(sendingMRP)
+		packet := mrp.ToByte(sendingMRP)
 
 		conn.Write(packet)
 	}

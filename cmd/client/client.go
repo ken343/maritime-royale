@@ -17,7 +17,7 @@ import (
 	"github.com/ken343/maritime-royale/pkg/mrp"
 )
 
-var terrainData = []terrain.Terrain{}
+var terrainData = []terrain.Terrain{} // game.mapData.GetTerrain("2,4")
 var unitData = map[string]units.Unit{}
 
 var renderer *sdl.Renderer
