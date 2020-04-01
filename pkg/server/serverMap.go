@@ -9,10 +9,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/JosephZoeller/maritime-royale/pkg/mrp"
-	"github.com/JosephZoeller/maritime-royale/pkg/units"
+	"github.com/ken343/maritime-royale/pkg/mrp"
+	"github.com/ken343/maritime-royale/pkg/units"
 
-	"github.com/JosephZoeller/maritime-royale/pkg/terrain"
+	"github.com/ken343/maritime-royale/pkg/terrain"
 )
 
 //Square contains all the data about a specific square

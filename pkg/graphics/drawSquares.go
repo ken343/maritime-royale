@@ -1,10 +1,11 @@
 package graphics
 
 import (
-	"github.com/JosephZoeller/maritime-royale/pkg/screen"
+	"github.com/ken343/maritime-royale/pkg/screen"
 	"github.com/veandco/go-sdl2/sdl"
 )
 
+// DrawSquare does what it says on the tin. Will need to refactor for Ebiten Game Engine
 func DrawSquare(renderer *sdl.Renderer, scale int, x int, y int, plrView screen.ViewPort, tex *sdl.Texture) {
 
 	if plrView.Xpos/float64(scale) > float64(x)+1 || float64(x)-1 > (plrView.Width+plrView.Xpos)/float64(scale) {

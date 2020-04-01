@@ -1,8 +1,8 @@
 package terrain
 
 import (
-	"github.com/JosephZoeller/maritime-royale/pkg/graphics"
-	"github.com/JosephZoeller/maritime-royale/pkg/screen"
+	"github.com/ken343/maritime-royale/pkg/graphics"
+	"github.com/ken343/maritime-royale/pkg/screen"
 	"github.com/veandco/go-sdl2/sdl"
 )
 

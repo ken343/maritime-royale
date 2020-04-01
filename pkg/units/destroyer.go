@@ -4,9 +4,9 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/JosephZoeller/maritime-royale/pkg/graphics"
-	"github.com/JosephZoeller/maritime-royale/pkg/mrp"
-	"github.com/JosephZoeller/maritime-royale/pkg/screen"
+	"github.com/ken343/maritime-royale/pkg/graphics"
+	"github.com/ken343/maritime-royale/pkg/mrp"
+	"github.com/ken343/maritime-royale/pkg/screen"
 	"github.com/veandco/go-sdl2/sdl"
 )
 
@@ -19,6 +19,7 @@ type destroyer struct {
 
 var destroyerTexture *sdl.Texture = nil
 
+// NewDestroyer creates a new destory at the indicated coordinates.
 func NewDestroyer(x int, y int) (s destroyer) {
 	s.tex = nil
 

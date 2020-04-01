@@ -3,7 +3,7 @@ package terrain
 import (
 	"fmt"
 
-	"github.com/JosephZoeller/maritime-royale/pkg/screen"
+	"github.com/ken343/maritime-royale/pkg/screen"
 	"github.com/veandco/go-sdl2/sdl"
 )
 

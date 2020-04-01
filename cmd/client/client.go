@@ -9,12 +9,12 @@ import (
 	"strings"
 	"time"
 
-	"github.com/JosephZoeller/maritime-royale/pkg/screen"
-	"github.com/JosephZoeller/maritime-royale/pkg/terrain"
-	"github.com/JosephZoeller/maritime-royale/pkg/units"
+	"github.com/ken343/maritime-royale/pkg/screen"
+	"github.com/ken343/maritime-royale/pkg/terrain"
+	"github.com/ken343/maritime-royale/pkg/units"
 	"github.com/veandco/go-sdl2/sdl"
 
-	"github.com/JosephZoeller/maritime-royale/pkg/mrp"
+	"github.com/ken343/maritime-royale/pkg/mrp"
 )
 
 var terrainData = []terrain.Terrain{}

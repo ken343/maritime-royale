@@ -3,8 +3,8 @@ package units
 import (
 	"fmt"
 
-	"github.com/JosephZoeller/maritime-royale/pkg/mrp"
-	"github.com/JosephZoeller/maritime-royale/pkg/screen"
+	"github.com/ken343/maritime-royale/pkg/mrp"
+	"github.com/ken343/maritime-royale/pkg/screen"
 	"github.com/veandco/go-sdl2/sdl"
 )
 
