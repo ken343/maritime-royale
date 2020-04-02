@@ -9,6 +9,8 @@ import (
 	"github.com/jtheiss19/project-undying/pkg/elements"
 )
 
+//SpriteRenderer is the component that handles all
+//rendering of sprites onto the screen
 type SpriteRenderer struct {
 	container *elements.Element
 	Tex       *ebiten.Image
@@ -17,6 +19,9 @@ type SpriteRenderer struct {
 	Width, Height float64
 }
 
+//NewSpriteRenderer creates a SpriteRenderer which
+//is the component that handles all rendering of
+//sprites onto the screen
 func NewSpriteRenderer(container *elements.Element, filename string, masterTex *ebiten.Image) *SpriteRenderer {
 	var tex *ebiten.Image
 	if masterTex == nil {
@@ -35,6 +40,7 @@ func NewSpriteRenderer(container *elements.Element, filename string, masterTex *
 	}
 }
 
+//OnDraw Draws the stored texture file onto the screen
 func (sr *SpriteRenderer) OnDraw(screen *ebiten.Image) error {
 	op := &ebiten.DrawImageOptions{}
 	op.GeoM.Reset()
@@ -50,6 +56,7 @@ func (sr *SpriteRenderer) OnDraw(screen *ebiten.Image) error {
 	return nil
 }
 
+//OnUpdate is used to qualify SpriteRenderer as a component
 func (sr *SpriteRenderer) OnUpdate() error {
 	return nil
 }

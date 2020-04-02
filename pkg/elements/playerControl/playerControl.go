@@ -5,12 +5,16 @@ import (
 	"github.com/jtheiss19/project-undying/pkg/elements"
 )
 
+//KeyboardMover is the component that handles all
+//keyboard movement
 type KeyboardMover struct {
 	container *elements.Element
 	Speed     float64
 	Type      string
 }
 
+//NewKeyboardMover creates a KeyboardMover which is
+//the component that handles all keyboard movement
 func NewKeyboardMover(container *elements.Element, speed float64) *KeyboardMover {
 	return &KeyboardMover{
 		container: container,
@@ -19,10 +23,13 @@ func NewKeyboardMover(container *elements.Element, speed float64) *KeyboardMover
 	}
 }
 
+//OnDraw is used to qualify SpriteRenderer as a component
 func (mover *KeyboardMover) OnDraw(screen *ebiten.Image) error {
 	return nil
 }
 
+//OnUpdate scans the state of the keyboard and prefroms
+//actions based on said state.
 func (mover *KeyboardMover) OnUpdate() error {
 	if ebiten.IsKeyPressed(ebiten.KeyA) {
 		mover.container.XPos -= mover.Speed
