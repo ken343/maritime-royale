@@ -48,3 +48,7 @@ func (mover *KeyboardMover) OnUpdate() error {
 
 	return nil
 }
+
+func (mover *KeyboardMover) OnCheck(elemC *elements.Element) error {
+	return nil
+}

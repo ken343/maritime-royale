@@ -5,6 +5,7 @@ import (
 	"log"
 	"net"
 
+	"github.com/jtheiss19/project-undying/pkg/gamestate"
 	"github.com/jtheiss19/project-undying/pkg/mrp"
 )
 
@@ -43,7 +44,7 @@ func session(ln net.Listener, newConnSignal chan string, sessionID int) {
 
 	connectionList[sessionID] = conn
 
-	go mrp.ReadMRPFromConn(conn, handleMRP)
+	go mrp.ReadMRPFromConn(conn, gamestate.HandleMRP)
 
 	sendElemMap(conn)
 

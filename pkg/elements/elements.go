@@ -1,7 +1,6 @@
 package elements
 
 import (
-	"fmt"
 	"reflect"
 
 	"github.com/hajimehoshi/ebiten"
@@ -15,6 +14,7 @@ import (
 type Component interface {
 	OnUpdate() error
 	OnDraw(screen *ebiten.Image) error
+	OnCheck(*Element) error
 }
 
 //Element is the basic atomic structure for all objects.
@@ -36,9 +36,11 @@ type Element struct {
 //components OnDraw() function.
 func (elem *Element) Draw(screen *ebiten.Image) error {
 	for _, comp := range elem.Components {
-		err := comp.OnDraw(screen)
-		if err != nil {
-			return err
+		if comp != nil {
+			err := comp.OnDraw(screen)
+			if err != nil {
+				return err
+			}
 		}
 	}
 
@@ -51,9 +53,24 @@ func (elem *Element) Draw(screen *ebiten.Image) error {
 //components OnUpdate() function.
 func (elem *Element) Update() error {
 	for _, comp := range elem.Components {
-		err := comp.OnUpdate()
-		if err != nil {
-			return err
+		if comp != nil {
+			err := comp.OnUpdate()
+			if err != nil {
+				return err
+			}
+		}
+	}
+
+	return nil
+}
+
+func (elem *Element) Check(elemC *Element) error {
+	for _, comp := range elem.Components {
+		if comp != nil {
+			err := comp.OnCheck(elemC)
+			if err != nil {
+				return err
+			}
 		}
 	}
 
@@ -66,9 +83,10 @@ func (elem *Element) Update() error {
 func (elem *Element) AddComponent(new Component) {
 	for _, existing := range elem.Components {
 		if reflect.TypeOf(new) == reflect.TypeOf(existing) {
-			panic(fmt.Sprintf(
-				"attempt to add new component with existing type %v",
-				reflect.TypeOf(new)))
+			//panic(fmt.Sprintf(
+			//"attempt to add new component with existing type %v",
+			//reflect.TypeOf(new)))
+			return
 		}
 	}
 	elem.Components = append(elem.Components, new)

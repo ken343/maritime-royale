@@ -21,6 +21,7 @@ func NewWorld() {
 		}
 	}
 	myPlayer := objects.NewPlayer(nil)
+
 	elementList = append(elementList, myPlayer)
 }
 
