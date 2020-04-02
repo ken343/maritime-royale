@@ -8,6 +8,9 @@ import (
 	"github.com/jtheiss19/project-undying/pkg/gamestate"
 )
 
+//Update is the mainloop designed to be passed into an
+//ebiten run function. It is called every tick and thus
+//every frame. This is what controls game logic and rendering.
 func Update(screen *ebiten.Image) error {
 	if ebiten.IsDrawingSkipped() {
 		return nil

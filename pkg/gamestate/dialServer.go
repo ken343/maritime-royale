@@ -15,6 +15,8 @@ import (
 
 var serverConnection net.Conn
 
+//Dial setsup a gamestate to be controlled by the server dialed
+//via the address variable.
 func Dial(address string) {
 	var err error
 
@@ -82,13 +84,4 @@ func handleMRP(newMRPList []*mrp.MRP, conn net.Conn) {
 
 		}
 	}
-}
-
-func UpdateGamestateFromServer() {
-	myMRP := mrp.NewMRP([]byte("ELEM"), []byte("test"), []byte("test"))
-	serverConnection.Write(myMRP.MRPToByte())
-}
-
-func GetServerConnection() net.Conn {
-	return serverConnection
 }
