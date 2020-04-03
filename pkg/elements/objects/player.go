@@ -3,17 +3,16 @@ package objects
 import (
 	"net"
 
-	"github.com/hajimehoshi/ebiten"
+	"github.com/jtheiss19/project-undying/pkg/elements/secondOrder/physics"
+
 	"github.com/jtheiss19/project-undying/pkg/elements"
-	"github.com/jtheiss19/project-undying/pkg/elements/playerControl"
-	"github.com/jtheiss19/project-undying/pkg/elements/render"
+	"github.com/jtheiss19/project-undying/pkg/elements/secondOrder/playerControl"
+	"github.com/jtheiss19/project-undying/pkg/elements/secondOrder/render"
 )
 
 const (
 	playerSpeed = 1
 )
-
-var playerTexture *ebiten.Image
 
 func NewPlayer(conn net.Conn) *elements.Element {
 	player := &elements.Element{}
@@ -23,19 +22,22 @@ func NewPlayer(conn net.Conn) *elements.Element {
 
 	player.Active = true
 
-	player.Type = "player"
-	player.ID = "0"
+	player.UniqueName = "player"
 
-	sr := render.NewSpriteRenderer(player, "destroyer.png", playerTexture)
+	sr := render.NewSpriteRenderer(player, "destroyer.png")
 	player.AddComponent(sr)
-
-	playerTexture = sr.Tex
 
 	mover := playerControl.NewKeyboardMover(player, playerSpeed)
 	player.AddComponent(mover)
 
 	replic := playerControl.NewReplicator(player, conn)
 	player.AddComponent(replic)
+
+	coli := physics.NewCollider(player)
+	player.AddComponent(coli)
+
+	rot := render.NewRotator(player)
+	player.AddComponent(rot)
 
 	return player
 }

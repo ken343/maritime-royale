@@ -1,0 +1,5 @@
+package playerControl
+
+func Init() {
+
+}

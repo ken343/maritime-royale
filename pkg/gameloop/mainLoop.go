@@ -5,8 +5,16 @@ import (
 
 	"github.com/hajimehoshi/ebiten"
 	"github.com/hajimehoshi/ebiten/ebitenutil"
+	"github.com/jtheiss19/project-undying/pkg/elements"
+	"github.com/jtheiss19/project-undying/pkg/elements/objects"
 	"github.com/jtheiss19/project-undying/pkg/gamestate"
 )
+
+var myScreen *elements.Element
+
+func MakeScreen() {
+	myScreen = objects.NewScreen(-1280/2, -720/2)
+}
 
 //Update is the mainloop designed to be passed into an
 //ebiten run function. It is called every tick and thus
@@ -16,16 +24,21 @@ func Update(screen *ebiten.Image) error {
 		return nil
 	}
 
-	tileCount := 0
+	world := gamestate.GetWorld()
 
-	for _, elem := range gamestate.GetWorld() {
-		if elem.Active {
-			err := elem.Update()
+	myScreen.Update(world)
+	myScreen.Draw(screen, 0, 0)
+
+	tileCount := 0
+	for _, elem := range world {
+		if elem.Active && canView(elem, screen) {
+
+			err := elem.Update(world)
 			if err != nil {
 				fmt.Println("updating element:", err)
 				return nil
 			}
-			err = elem.Draw(screen)
+			err = elem.Draw(screen, -myScreen.XPos, -myScreen.YPos)
 			if err != nil {
 				fmt.Println("drawing element:", elem)
 				return nil
@@ -38,4 +51,16 @@ func Update(screen *ebiten.Image) error {
 	ebitenutil.DebugPrint(screen, msg)
 
 	return nil
+}
+
+func canView(elem *elements.Element, screen *ebiten.Image) bool {
+	w, h := screen.Size()
+	buf := 64.0
+	if myScreen.XPos <= elem.XPos+buf && elem.XPos <= myScreen.XPos+float64(w)+buf {
+		if myScreen.YPos <= elem.YPos+buf && elem.YPos <= myScreen.YPos+float64(h)+buf {
+			return true
+		}
+	}
+
+	return false
 }
