@@ -1,6 +1,7 @@
 package elements
 
 import (
+	"net"
 	"reflect"
 
 	"github.com/hajimehoshi/ebiten"
@@ -12,9 +13,11 @@ import (
 //function then it counts as a component. These functions
 //may be empty.
 type Component interface {
-	OnUpdate() error
-	OnDraw(screen *ebiten.Image) error
+	OnUpdate(world []*Element) error
+	OnDraw(screen *ebiten.Image, xOffset float64, yOffset float64) error
 	OnCheck(*Element) error
+	OnUpdateServer(world []*Element) error
+	MRP(finalElem *Element, conn net.Conn)
 }
 
 //Element is the basic atomic structure for all objects.
@@ -34,10 +37,10 @@ type Element struct {
 //and runs the OnDraw() function for each one.
 //Error is returned through the first error from a
 //components OnDraw() function.
-func (elem *Element) Draw(screen *ebiten.Image) error {
+func (elem *Element) Draw(screen *ebiten.Image, xOffset float64, yOffset float64) error {
 	for _, comp := range elem.Components {
 		if comp != nil {
-			err := comp.OnDraw(screen)
+			err := comp.OnDraw(screen, xOffset, yOffset)
 			if err != nil {
 				return err
 			}
@@ -51,10 +54,23 @@ func (elem *Element) Draw(screen *ebiten.Image) error {
 //and runs the OnUpdate() function for each one.
 //Error is returned through the first error from a
 //components OnUpdate() function.
-func (elem *Element) Update() error {
+func (elem *Element) Update(world []*Element) error {
 	for _, comp := range elem.Components {
 		if comp != nil {
-			err := comp.OnUpdate()
+			err := comp.OnUpdate(world)
+			if err != nil {
+				return err
+			}
+		}
+	}
+
+	return nil
+}
+
+func (elem *Element) UpdateServer(world []*Element) error {
+	for _, comp := range elem.Components {
+		if comp != nil {
+			err := comp.OnUpdateServer(world)
 			if err != nil {
 				return err
 			}

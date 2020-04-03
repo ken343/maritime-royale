@@ -2,9 +2,11 @@ package render
 
 import (
 	"math"
+	"net"
 
 	"github.com/hajimehoshi/ebiten"
 	"github.com/jtheiss19/project-undying/pkg/elements"
+	"github.com/jtheiss19/project-undying/pkg/gamestate"
 	"github.com/jtheiss19/project-undying/pkg/networking/connection"
 )
 
@@ -15,6 +17,11 @@ type Rotator struct {
 	XPrev     float64
 	YPrev     float64
 	Type      string
+}
+
+func init() {
+	var rot = new(Rotator)
+	gamestate.MRPMAP["Rotator"] = rot
 }
 
 //NewRotator creates a SpriteRenderer which
@@ -30,13 +37,18 @@ func NewRotator(container *elements.Element) *Rotator {
 	}
 }
 
+func (rot *Rotator) MRP(finalElem *elements.Element, conn net.Conn) {
+	myComp := NewRotator(finalElem)
+	finalElem.AddComponent(myComp)
+}
+
 //OnDraw Draws the stored texture file onto the screen
-func (rot *Rotator) OnDraw(screen *ebiten.Image) error {
+func (rot *Rotator) OnDraw(screen *ebiten.Image, xOffset float64, yOffset float64) error {
 	return nil
 }
 
 //OnUpdate is used to qualify SpriteRenderer as a component
-func (rot *Rotator) OnUpdate() error {
+func (rot *Rotator) OnUpdate(world []*elements.Element) error {
 	if rot.container.ID != connection.GetID() {
 		return nil
 	}
@@ -50,5 +62,9 @@ func (rot *Rotator) OnUpdate() error {
 }
 
 func (rot *Rotator) OnCheck(elemC *elements.Element) error {
+	return nil
+}
+
+func (rot *Rotator) OnUpdateServer(world []*elements.Element) error {
 	return nil
 }

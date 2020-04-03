@@ -2,7 +2,7 @@ package objects
 
 import (
 	"github.com/jtheiss19/project-undying/pkg/elements"
-	"github.com/jtheiss19/project-undying/pkg/elements/render"
+	"github.com/jtheiss19/project-undying/pkg/elements/secondOrder/render"
 )
 
 func NewWater(xpos float64, ypos float64, Name string) *elements.Element {

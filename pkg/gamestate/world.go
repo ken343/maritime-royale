@@ -4,10 +4,8 @@ import (
 	"encoding/json"
 	"log"
 	"net"
-	"strconv"
 
 	"github.com/jtheiss19/project-undying/pkg/elements"
-	"github.com/jtheiss19/project-undying/pkg/elements/objects"
 	"github.com/jtheiss19/project-undying/pkg/networking/mrp"
 )
 
@@ -15,22 +13,6 @@ var elementList []*elements.Element
 var elementListTemp []*elements.Element
 
 var connectionList = make(map[int]net.Conn)
-
-//NewWorld inits the elementList with elements representing
-//water and a single player element. This is essentially a
-//test enviroment.
-func NewWorld() {
-	for x := 0; x < 5; x++ {
-		for y := 0; y < 5; y++ {
-			myWater := objects.NewWater(float64(x*64), float64(y*64), strconv.Itoa(x)+","+strconv.Itoa(y))
-			AddElemToWorld(myWater)
-			if x%2 == 1 {
-				myIsland := objects.NewIsland(float64(x*64), float64(y*64), strconv.Itoa(x)+","+strconv.Itoa(y)+" ")
-				AddElemToWorld(myIsland)
-			}
-		}
-	}
-}
 
 //GetWorld returns the elementlist representing the current
 //gamestate of the world
@@ -99,4 +81,10 @@ func ForceUpdate(conn net.Conn) {
 
 func NewConnection(conn net.Conn, ID int) {
 	connectionList[ID] = conn
+}
+
+func UpdateElemToAll(elem *elements.Element) {
+	for _, client := range connectionList {
+		SendElem(client, elem)
+	}
 }

@@ -1,8 +1,11 @@
 package playerControl
 
 import (
+	"net"
+
 	"github.com/hajimehoshi/ebiten"
 	"github.com/jtheiss19/project-undying/pkg/elements"
+	"github.com/jtheiss19/project-undying/pkg/gamestate"
 	"github.com/jtheiss19/project-undying/pkg/networking/connection"
 )
 
@@ -12,6 +15,11 @@ type KeyboardMover struct {
 	container *elements.Element
 	Speed     float64
 	Type      string
+}
+
+func init() {
+	var mover = new(KeyboardMover)
+	gamestate.MRPMAP["KeyboardMover"] = mover
 }
 
 //NewKeyboardMover creates a KeyboardMover which is
@@ -24,14 +32,19 @@ func NewKeyboardMover(container *elements.Element, speed float64) *KeyboardMover
 	}
 }
 
+func (mover *KeyboardMover) MRP(finalElem *elements.Element, conn net.Conn) {
+	myComp := NewKeyboardMover(finalElem, 1)
+	finalElem.AddComponent(myComp)
+}
+
 //OnDraw is used to qualify SpriteRenderer as a component
-func (mover *KeyboardMover) OnDraw(screen *ebiten.Image) error {
+func (mover *KeyboardMover) OnDraw(screen *ebiten.Image, xOffset float64, yOffset float64) error {
 	return nil
 }
 
 //OnUpdate scans the state of the keyboard and prefroms
 //actions based on said state.
-func (mover *KeyboardMover) OnUpdate() error {
+func (mover *KeyboardMover) OnUpdate(world []*elements.Element) error {
 	if mover.container.ID != connection.GetID() {
 		return nil
 	}
@@ -55,5 +68,9 @@ func (mover *KeyboardMover) OnUpdate() error {
 }
 
 func (mover *KeyboardMover) OnCheck(elemC *elements.Element) error {
+	return nil
+}
+
+func (mover *KeyboardMover) OnUpdateServer(world []*elements.Element) error {
 	return nil
 }

@@ -3,9 +3,11 @@ package objects
 import (
 	"net"
 
+	"github.com/jtheiss19/project-undying/pkg/elements/secondOrder/physics"
+
 	"github.com/jtheiss19/project-undying/pkg/elements"
-	"github.com/jtheiss19/project-undying/pkg/elements/playerControl"
-	"github.com/jtheiss19/project-undying/pkg/elements/render"
+	"github.com/jtheiss19/project-undying/pkg/elements/secondOrder/playerControl"
+	"github.com/jtheiss19/project-undying/pkg/elements/secondOrder/render"
 )
 
 const (
@@ -21,7 +23,6 @@ func NewPlayer(conn net.Conn) *elements.Element {
 	player.Active = true
 
 	player.UniqueName = "player"
-	player.ID = "-1"
 
 	sr := render.NewSpriteRenderer(player, "destroyer.png")
 	player.AddComponent(sr)
@@ -29,11 +30,11 @@ func NewPlayer(conn net.Conn) *elements.Element {
 	mover := playerControl.NewKeyboardMover(player, playerSpeed)
 	player.AddComponent(mover)
 
-	//tkr := playerControl.NewTracker(player, 1, 600, 600)
-	//player.AddComponent(tkr)
-
 	replic := playerControl.NewReplicator(player, conn)
 	player.AddComponent(replic)
+
+	coli := physics.NewCollider(player)
+	player.AddComponent(coli)
 
 	rot := render.NewRotator(player)
 	player.AddComponent(rot)
