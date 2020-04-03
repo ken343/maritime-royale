@@ -1,3 +1,5 @@
+// Package mrp represent the Maritime Royale Protocal and
+// the auxilory functions associated with it.
 package mrp
 
 import (
@@ -7,12 +9,15 @@ import (
 	"strings"
 )
 
+// MRP is a Go interpretation of the MRP.
 type MRP struct {
 	request []byte
 	body    []byte
 	footers [][]byte
 }
 
+// NewMRP takes several byte streams that constitute the parts of an MRP message
+// creates a MRP object from it.
 func NewMRP(reqType []byte, message []byte, footerlist ...[]byte) *MRP {
 
 	var packet = MRP{
@@ -23,6 +28,8 @@ func NewMRP(reqType []byte, message []byte, footerlist ...[]byte) *MRP {
 	return &packet
 }
 
+// ReadMRPFromBytes parses an MRP message byte stream and returns
+// an MRP object, along with an error if any.
 func ReadMRPFromBytes(packet []byte) (*MRP, error) {
 	var retMRP = MRP{}
 
@@ -43,6 +50,8 @@ func ReadMRPFromBytes(packet []byte) (*MRP, error) {
 	return &retMRP, nil
 }
 
+// ReadMRPFromConn forms a list of MRPs from the given connection an then passes them to
+// a 2nd order MRP handler function to be processed.
 func ReadMRPFromConn(conn net.Conn, handleMRP func([]*MRP, net.Conn)) {
 	var err error
 
@@ -113,6 +122,8 @@ func ReadMRPFromConn(conn net.Conn, handleMRP func([]*MRP, net.Conn)) {
 	}
 }
 
+// MRPToByte is a conversion method that will produce a byte stream
+// that represents the receiver.
 func (s *MRP) MRPToByte() []byte {
 
 	var fullString = s.request
@@ -132,14 +143,17 @@ func (s *MRP) MRPToByte() []byte {
 	return packet
 }
 
+// GetRequest will read out the MRPs request field.
 func (s *MRP) GetRequest() string {
 	return string(s.request)
 }
 
+// GetBody will read out the MRPs body field in string format.
 func (s *MRP) GetBody() string {
 	return string(s.body)
 }
 
+// GetFooters will read out a slice of from the receiver.
 func (s *MRP) GetFooters() []string {
 	var footerString []string
 	for _, item := range s.footers {

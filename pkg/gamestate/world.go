@@ -32,12 +32,14 @@ func NewWorld() {
 	}
 }
 
-//GetWorld returns the elementlist representing the current
-//gamestate of the world
+// GetWorld returns the elementList representing the current
+// gamestate of the world
 func GetWorld() []*elements.Element {
 	return elementList
 }
 
+// AddElemToWorld will append the new element to elementList, send the element to each client
+// in the connection list and force a client update.
 func AddElemToWorld(elem *elements.Element) {
 	elementList = append(elementList, elem)
 	for _, client := range connectionList {
@@ -69,6 +71,8 @@ func PushElemMap() {
 
 }
 
+// SendElemMap will send a send each element to the desired connection
+// and force an update.
 func SendElemMap(conn net.Conn) {
 	myMap := GetWorld()
 
@@ -85,18 +89,23 @@ func SendElemMap(conn net.Conn) {
 	ForceUpdate(conn)
 }
 
+// SendElem wraps the an element in the MRP protcol and sends it to passed in
+// tcp connection.
 func SendElem(conn net.Conn, elem *elements.Element) {
-	bytes, _ := json.Marshal(&elem)
+	bytes, _ := json.Marshal(&elem) // Isn't this a pointer to a pointer that is being marshaled? - Ken
 
 	myMRP := mrp.NewMRP([]byte("ELEM"), bytes, []byte(""))
 	conn.Write(myMRP.MRPToByte())
 }
 
+// ForceUpdate sends and END MRP request?
 func ForceUpdate(conn net.Conn) {
 	myMRP := mrp.NewMRP([]byte("END"), []byte(""), []byte(""))
 	conn.Write(myMRP.MRPToByte())
 }
 
+// NewConnection updates the world.connectionList with a newly added connection
+// and assigns an ID to it.
 func NewConnection(conn net.Conn, ID int) {
 	connectionList[ID] = conn
 }

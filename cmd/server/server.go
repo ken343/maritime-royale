@@ -8,7 +8,7 @@ import (
 	"github.com/jtheiss19/project-undying/pkg/networking/server"
 )
 
-const tps = 60
+const tps = 60 //ticks per second
 
 func main() {
 	go server.Server("8080")
@@ -25,7 +25,7 @@ func main() {
 			if elem.Active {
 				err := elem.Update()
 				if err != nil {
-					fmt.Println("updating element:", err)
+					fmt.Println("error updating element:", err)
 					return
 				}
 			}

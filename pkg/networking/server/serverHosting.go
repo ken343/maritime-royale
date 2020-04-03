@@ -32,6 +32,7 @@ func Server(port string) {
 	}
 }
 
+// The order of made connections will also act as that connection's ID.
 func session(ln net.Listener, newConnSignal chan string, sessionID int) {
 	conn, err := ln.Accept()
 	if err != nil {
@@ -49,6 +50,6 @@ func session(ln net.Listener, newConnSignal chan string, sessionID int) {
 	gamestate.SendElemMap(conn)
 	spawnStarterShip(conn, strconv.Itoa(sessionID))
 
-	closeConnection := make(chan string)
+	closeConnection := make(chan string) // What do these two line do? - Ken
 	fmt.Println(<-closeConnection)
 }

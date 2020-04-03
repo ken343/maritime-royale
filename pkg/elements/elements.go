@@ -1,7 +1,7 @@
 package elements
 
 import (
-	"reflect"
+	"reflect" // Is the reflect package necessary with the inclusion of type assertions?
 
 	"github.com/hajimehoshi/ebiten"
 )
@@ -64,6 +64,10 @@ func (elem *Element) Update() error {
 	return nil
 }
 
+//Check loops through all components within the element
+//and runs the OnCheck() function for each one.
+//Error is returned through the first error from a
+//components OnCheck() function.
 func (elem *Element) Check(elemC *Element) error {
 	for _, comp := range elem.Components {
 		if comp != nil {
