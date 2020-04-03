@@ -5,7 +5,6 @@ import (
 
 	"github.com/hajimehoshi/ebiten"
 	"github.com/hajimehoshi/ebiten/ebitenutil"
-	"github.com/jtheiss19/project-undying/pkg/elements/playerControl"
 	"github.com/jtheiss19/project-undying/pkg/gamestate"
 )
 
@@ -19,7 +18,7 @@ func Update(screen *ebiten.Image) error {
 
 	tileCount := 0
 
-	for k, elem := range gamestate.GetWorld() {
+	for _, elem := range gamestate.GetWorld() {
 		if elem.Active {
 			err := elem.Update()
 			if err != nil {
@@ -30,17 +29,6 @@ func Update(screen *ebiten.Image) error {
 			if err != nil {
 				fmt.Println("drawing element:", elem)
 				return nil
-			}
-			if k == len(gamestate.GetWorld())-1 {
-				trc := new(playerControl.Tracker)
-				myComp := elem.GetComponent(trc)
-				if myComp != nil {
-					if myComp.(*playerControl.Tracker).GetContainer() == elem {
-						fmt.Println("true")
-					} else {
-						fmt.Println("false")
-					}
-				}
 			}
 			tileCount++
 		}

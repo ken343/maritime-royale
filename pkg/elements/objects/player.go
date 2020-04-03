@@ -32,11 +32,11 @@ func NewPlayer(conn net.Conn) *elements.Element {
 	clc := playerControl.NewClicker(player)
 	player.AddComponent(clc)
 
-	//trc := playerControl.NewTracker(player, 1, 600, 600)
-	//player.AddComponent(trc)
-
 	replic := playerControl.NewReplicator(player, conn)
 	player.AddComponent(replic)
+
+	rot := render.NewRotator(player)
+	player.AddComponent(rot)
 
 	return player
 }

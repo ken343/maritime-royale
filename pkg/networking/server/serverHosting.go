@@ -6,7 +6,7 @@ import (
 	"net"
 
 	"github.com/jtheiss19/project-undying/pkg/gamestate"
-	"github.com/jtheiss19/project-undying/pkg/mrp"
+	"github.com/jtheiss19/project-undying/pkg/networking/mrp"
 )
 
 var connectionList = make(map[int]net.Conn)

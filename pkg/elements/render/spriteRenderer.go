@@ -2,7 +2,6 @@ package render
 
 import (
 	"log"
-	"math"
 
 	"github.com/hajimehoshi/ebiten"
 	"github.com/hajimehoshi/ebiten/ebitenutil"
@@ -56,7 +55,7 @@ func (sr *SpriteRenderer) OnDraw(screen *ebiten.Image) error {
 	op.GeoM.Reset()
 
 	op.GeoM.Translate(-float64(sr.Width)/2, -float64(sr.Height)/2)
-	op.GeoM.Rotate(1 * math.Pi * sr.container.Rotation / 360)
+	op.GeoM.Rotate(sr.container.Rotation)
 	op.GeoM.Translate(float64(sr.Width)/2, float64(sr.Height)/2)
 	op.GeoM.Translate(sr.container.XPos, sr.container.YPos)
 

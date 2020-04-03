@@ -9,7 +9,7 @@ import (
 	"github.com/jtheiss19/project-undying/pkg/elements"
 	"github.com/jtheiss19/project-undying/pkg/elements/playerControl"
 	"github.com/jtheiss19/project-undying/pkg/elements/render"
-	"github.com/jtheiss19/project-undying/pkg/mrp"
+	"github.com/jtheiss19/project-undying/pkg/networking/mrp"
 )
 
 var serverConnection net.Conn
@@ -37,7 +37,7 @@ func HandleMRP(newMRPList []*mrp.MRP, conn net.Conn) {
 			handleELEMCreates(bytesMaster, finalElem)
 
 			elementListTemp = append(elementListTemp, finalElem)
-			if len(elementListTemp) > 100 {
+			if len(elementListTemp) > 10 {
 				PushElemMap()
 			}
 
@@ -50,12 +50,16 @@ func HandleMRP(newMRPList []*mrp.MRP, conn net.Conn) {
 					if elem.Check(elemTemp) == nil {
 						handleELEMCreates([]byte(mrpItem.GetBody()), elem)
 					}
+				}
+			}
 
-					//bytes, _ := json.Marshal(&elem)
+		case "RETURN":
+			for _, elem := range GetWorld() {
+				if elem.ID == mrpItem.GetFooters()[0] {
+					bytes, _ := json.Marshal(&elem)
 
-					//myMRP := mrp.NewMRP([]byte("ELEM"), bytes, []byte(""))
-					//conn.Write(myMRP.MRPToByte())
-
+					myMRP := mrp.NewMRP([]byte("ELEM"), bytes, []byte(""))
+					conn.Write(myMRP.MRPToByte())
 				}
 			}
 
@@ -110,10 +114,15 @@ func handleELEMCreates(bytesMaster []byte, finalElem *elements.Element) {
 			json.Unmarshal(bytes, &myComp)
 			finalElem.AddComponent(myComp)
 
+		case "Rotator":
+			myComp = render.NewRotator(finalElem)
+			bytes, _ := json.Marshal(comp)
+			json.Unmarshal(bytes, &myComp)
+			finalElem.AddComponent(myComp)
+
 		default:
 			fmt.Println("Component not defined")
 		}
-
 	}
 
 	json.Unmarshal(bytesMaster, &finalElem)

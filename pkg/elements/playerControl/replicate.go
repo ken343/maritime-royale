@@ -2,12 +2,12 @@ package playerControl
 
 import (
 	"encoding/json"
-	"fmt"
 	"net"
 
 	"github.com/hajimehoshi/ebiten"
 	"github.com/jtheiss19/project-undying/pkg/elements"
-	"github.com/jtheiss19/project-undying/pkg/mrp"
+	"github.com/jtheiss19/project-undying/pkg/networking/connection"
+	"github.com/jtheiss19/project-undying/pkg/networking/mrp"
 )
 
 //Replicator is the component that handles all
@@ -40,10 +40,16 @@ func (replic *Replicator) OnDraw(screen *ebiten.Image) error {
 //connection.
 func (replic *Replicator) OnUpdate() error {
 	if replic.conn != nil {
+
+		if replic.container.ID == connection.GetID() {
+			bytes, _ := json.Marshal(replic.container)
+			myMRP := mrp.NewMRP([]byte("REPLIC"), []byte(bytes), []byte(replic.container.ID))
+			replic.conn.Write(myMRP.MRPToByte())
+		}
+
 		bytes, _ := json.Marshal(replic.container)
-		myMRP := mrp.NewMRP([]byte("REPLIC"), []byte(bytes), []byte(replic.container.ID))
+		myMRP := mrp.NewMRP([]byte("RETURN"), []byte(bytes), []byte(replic.container.ID))
 		replic.conn.Write(myMRP.MRPToByte())
-		fmt.Println("here")
 	}
 	return nil
 }
