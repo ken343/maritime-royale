@@ -6,6 +6,8 @@ import (
 	"log"
 	"net"
 
+	"github.com/jtheiss19/project-undying/pkg/networking/connection"
+
 	"github.com/jtheiss19/project-undying/pkg/elements"
 	"github.com/jtheiss19/project-undying/pkg/elements/playerControl"
 	"github.com/jtheiss19/project-undying/pkg/elements/render"
@@ -13,6 +15,7 @@ import (
 )
 
 var serverConnection net.Conn
+var IDs int = 0
 
 //Dial setsup a gamestate to be controlled by the server dialed
 //via the address variable.
@@ -56,12 +59,12 @@ func HandleMRP(newMRPList []*mrp.MRP, conn net.Conn) {
 		case "RETURN":
 			for _, elem := range GetWorld() {
 				if elem.ID == mrpItem.GetFooters()[0] {
-					bytes, _ := json.Marshal(&elem)
-
-					myMRP := mrp.NewMRP([]byte("ELEM"), bytes, []byte(""))
-					conn.Write(myMRP.MRPToByte())
+					SendElem(conn, elem)
 				}
 			}
+
+		case "ID":
+			connection.SetID(mrpItem.GetBody())
 
 		case "END":
 			PushElemMap()

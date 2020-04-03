@@ -20,8 +20,8 @@ func NewPlayer(conn net.Conn) *elements.Element {
 
 	player.Active = true
 
-	player.Type = "player"
-	player.ID = "0"
+	player.UniqueName = "player"
+	player.ID = "-1"
 
 	sr := render.NewSpriteRenderer(player, "destroyer.png")
 	player.AddComponent(sr)
@@ -29,8 +29,8 @@ func NewPlayer(conn net.Conn) *elements.Element {
 	mover := playerControl.NewKeyboardMover(player, playerSpeed)
 	player.AddComponent(mover)
 
-	clc := playerControl.NewClicker(player)
-	player.AddComponent(clc)
+	//tkr := playerControl.NewTracker(player, 1, 600, 600)
+	//player.AddComponent(tkr)
 
 	replic := playerControl.NewReplicator(player, conn)
 	player.AddComponent(replic)

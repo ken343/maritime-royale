@@ -4,12 +4,11 @@ import (
 	"fmt"
 	"log"
 	"net"
+	"strconv"
 
 	"github.com/jtheiss19/project-undying/pkg/gamestate"
 	"github.com/jtheiss19/project-undying/pkg/networking/mrp"
 )
-
-var connectionList = make(map[int]net.Conn)
 
 //Server starts a server on the selected port and acts
 //as the main entrance into the server package.
@@ -42,11 +41,13 @@ func session(ln net.Listener, newConnSignal chan string, sessionID int) {
 
 	newConnSignal <- "New Connection Made"
 
-	connectionList[sessionID] = conn
+	gamestate.NewConnection(conn, sessionID)
+	sendSessionID(conn, strconv.Itoa(sessionID))
 
 	go mrp.ReadMRPFromConn(conn, gamestate.HandleMRP)
 
-	sendElemMap(conn)
+	gamestate.SendElemMap(conn)
+	spawnStarterShip(conn, strconv.Itoa(sessionID))
 
 	closeConnection := make(chan string)
 	fmt.Println(<-closeConnection)

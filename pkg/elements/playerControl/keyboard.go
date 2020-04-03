@@ -3,6 +3,7 @@ package playerControl
 import (
 	"github.com/hajimehoshi/ebiten"
 	"github.com/jtheiss19/project-undying/pkg/elements"
+	"github.com/jtheiss19/project-undying/pkg/networking/connection"
 )
 
 //KeyboardMover is the component that handles all
@@ -31,6 +32,10 @@ func (mover *KeyboardMover) OnDraw(screen *ebiten.Image) error {
 //OnUpdate scans the state of the keyboard and prefroms
 //actions based on said state.
 func (mover *KeyboardMover) OnUpdate() error {
+	if mover.container.ID != connection.GetID() {
+		return nil
+	}
+
 	if ebiten.IsKeyPressed(ebiten.KeyA) {
 		mover.container.XPos -= mover.Speed
 	}

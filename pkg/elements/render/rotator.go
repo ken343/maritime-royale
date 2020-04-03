@@ -5,6 +5,7 @@ import (
 
 	"github.com/hajimehoshi/ebiten"
 	"github.com/jtheiss19/project-undying/pkg/elements"
+	"github.com/jtheiss19/project-undying/pkg/networking/connection"
 )
 
 //Rotator is the component that handles all
@@ -36,6 +37,9 @@ func (rot *Rotator) OnDraw(screen *ebiten.Image) error {
 
 //OnUpdate is used to qualify SpriteRenderer as a component
 func (rot *Rotator) OnUpdate() error {
+	if rot.container.ID != connection.GetID() {
+		return nil
+	}
 	if rot.container.YPos == rot.YPrev && rot.container.XPos == rot.XPrev {
 	} else {
 		rot.container.Rotation = math.Atan2((rot.container.YPos - rot.YPrev), (rot.container.XPos - rot.XPrev))
