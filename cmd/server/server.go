@@ -1,13 +1,44 @@
 package main
 
 import (
-	"log"
+	"fmt"
+	"time"
 
-	"github.com/ken343/maritime-royale/pkg/server"
-	_ "github.com/ken343/maritime-royale/pkg/server"
+	"github.com/jtheiss19/project-undying/pkg/elements/secondOrder"
+	"github.com/jtheiss19/project-undying/pkg/gamemap"
+	"github.com/jtheiss19/project-undying/pkg/gamestate"
+	"github.com/jtheiss19/project-undying/pkg/networking/server"
 )
 
+const tps = 60
+
+func init() {
+	secondOrder.Init()
+}
+
 func main() {
-	log.Println("Maritime Royale Server Listening on Port :8080...")
-	server.Server(":8080")
+	go server.Server("8080")
+
+	gamemap.NewWorld()
+
+	var timeSinceLastUpdate int64
+	for {
+
+		time.Sleep((1000/tps - time.Duration(timeSinceLastUpdate)) * time.Millisecond)
+		now := time.Now().UnixNano()
+
+		world := gamestate.GetWorld()
+
+		for _, elem := range world {
+			if elem.Active {
+				err := elem.UpdateServer(world)
+				if err != nil {
+					fmt.Println("updating element:", err)
+					return
+				}
+			}
+		}
+
+		timeSinceLastUpdate = (time.Now().UnixNano() - now) / 1000000
+	}
 }
