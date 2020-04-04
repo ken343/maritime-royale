@@ -1,0 +1,4 @@
+# Ignore Binaries, but not the directory with the same name.
+server
+client
+!*/
