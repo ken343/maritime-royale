@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/jtheiss19/project-undying/pkg/elements/secondOrder"
-	"github.com/jtheiss19/project-undying/pkg/gamemap"
-	"github.com/jtheiss19/project-undying/pkg/gamestate"
-	"github.com/jtheiss19/project-undying/pkg/networking/server"
+	"github.com/ken343/maritime-royale/pkg/elements/secondOrder"
+	"github.com/ken343/maritime-royale/pkg/gamemap"
+	"github.com/ken343/maritime-royale/pkg/gamestate"
+	"github.com/ken343/maritime-royale/pkg/networking/server"
 )
 
 const tps = 60

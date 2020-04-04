@@ -5,10 +5,10 @@ import (
 	"time"
 
 	"github.com/hajimehoshi/ebiten"
-	"github.com/jtheiss19/project-undying/pkg/elements/secondOrder"
-	"github.com/jtheiss19/project-undying/pkg/gameloop"
-	"github.com/jtheiss19/project-undying/pkg/gamemap"
-	"github.com/jtheiss19/project-undying/pkg/gamestate"
+	"github.com/ken343/maritime-royale/pkg/elements/secondOrder"
+	"github.com/ken343/maritime-royale/pkg/gameloop"
+	"github.com/ken343/maritime-royale/pkg/gamemap"
+	"github.com/ken343/maritime-royale/pkg/gamestate"
 )
 
 const (

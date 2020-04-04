@@ -4,10 +4,10 @@ import (
 	"math"
 	"net"
 
-	"github.com/jtheiss19/project-undying/pkg/gamestate"
+	"github.com/ken343/maritime-royale/pkg/gamestate"
 
 	"github.com/hajimehoshi/ebiten"
-	"github.com/jtheiss19/project-undying/pkg/elements"
+	"github.com/ken343/maritime-royale/pkg/elements"
 )
 
 //Collider is the component that handles all

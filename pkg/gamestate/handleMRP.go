@@ -6,9 +6,9 @@ import (
 	"log"
 	"net"
 
-	"github.com/jtheiss19/project-undying/pkg/elements"
-	"github.com/jtheiss19/project-undying/pkg/networking/connection"
-	"github.com/jtheiss19/project-undying/pkg/networking/mrp"
+	"github.com/ken343/maritime-royale/pkg/elements"
+	"github.com/ken343/maritime-royale/pkg/networking/connection"
+	"github.com/ken343/maritime-royale/pkg/networking/mrp"
 )
 
 var serverConnection net.Conn

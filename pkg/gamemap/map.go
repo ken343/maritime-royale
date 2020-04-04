@@ -3,8 +3,8 @@ package gamemap
 import (
 	"strconv"
 
-	"github.com/jtheiss19/project-undying/pkg/elements/objects"
-	"github.com/jtheiss19/project-undying/pkg/gamestate"
+	"github.com/ken343/maritime-royale/pkg/elements/objects"
+	"github.com/ken343/maritime-royale/pkg/gamestate"
 )
 
 //NewWorld inits the elementList with elements representing

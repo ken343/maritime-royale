@@ -4,11 +4,11 @@ import (
 	"log"
 	"net"
 
-	"github.com/jtheiss19/project-undying/pkg/gamestate"
+	"github.com/ken343/maritime-royale/pkg/gamestate"
 
 	"github.com/hajimehoshi/ebiten"
 	"github.com/hajimehoshi/ebiten/ebitenutil"
-	"github.com/jtheiss19/project-undying/pkg/elements"
+	"github.com/ken343/maritime-royale/pkg/elements"
 )
 
 //SpriteRenderer is the component that handles all

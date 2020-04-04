@@ -1,9 +1,9 @@
 package objects
 
 import (
-	"github.com/jtheiss19/project-undying/pkg/elements"
-	"github.com/jtheiss19/project-undying/pkg/elements/secondOrder/playerControl"
-	"github.com/jtheiss19/project-undying/pkg/networking/connection"
+	"github.com/ken343/maritime-royale/pkg/elements"
+	"github.com/ken343/maritime-royale/pkg/elements/secondOrder/playerControl"
+	"github.com/ken343/maritime-royale/pkg/networking/connection"
 )
 
 func NewScreen(xpos float64, ypos float64) *elements.Element {

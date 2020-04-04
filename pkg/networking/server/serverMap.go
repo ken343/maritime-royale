@@ -3,10 +3,10 @@ package server
 import (
 	"net"
 
-	"github.com/jtheiss19/project-undying/pkg/elements/objects"
+	"github.com/ken343/maritime-royale/pkg/elements/objects"
 
-	"github.com/jtheiss19/project-undying/pkg/gamestate"
-	"github.com/jtheiss19/project-undying/pkg/networking/mrp"
+	"github.com/ken343/maritime-royale/pkg/gamestate"
+	"github.com/ken343/maritime-royale/pkg/networking/mrp"
 )
 
 func sendSessionID(conn net.Conn, ID string) {

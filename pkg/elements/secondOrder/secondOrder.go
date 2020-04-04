@@ -1,9 +1,9 @@
 package secondOrder
 
 import (
-	"github.com/jtheiss19/project-undying/pkg/elements/secondOrder/physics"
-	"github.com/jtheiss19/project-undying/pkg/elements/secondOrder/playerControl"
-	"github.com/jtheiss19/project-undying/pkg/elements/secondOrder/render"
+	"github.com/ken343/maritime-royale/pkg/elements/secondOrder/physics"
+	"github.com/ken343/maritime-royale/pkg/elements/secondOrder/playerControl"
+	"github.com/ken343/maritime-royale/pkg/elements/secondOrder/render"
 )
 
 func Init() {

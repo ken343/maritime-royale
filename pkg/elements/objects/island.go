@@ -1,9 +1,9 @@
 package objects
 
 import (
-	"github.com/jtheiss19/project-undying/pkg/elements"
-	"github.com/jtheiss19/project-undying/pkg/elements/secondOrder/physics"
-	"github.com/jtheiss19/project-undying/pkg/elements/secondOrder/render"
+	"github.com/ken343/maritime-royale/pkg/elements"
+	"github.com/ken343/maritime-royale/pkg/elements/secondOrder/physics"
+	"github.com/ken343/maritime-royale/pkg/elements/secondOrder/render"
 )
 
 func NewIsland(xpos float64, ypos float64, Name string) *elements.Element {

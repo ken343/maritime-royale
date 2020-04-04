@@ -5,9 +5,9 @@ import (
 
 	"github.com/hajimehoshi/ebiten"
 	"github.com/hajimehoshi/ebiten/ebitenutil"
-	"github.com/jtheiss19/project-undying/pkg/elements"
-	"github.com/jtheiss19/project-undying/pkg/elements/objects"
-	"github.com/jtheiss19/project-undying/pkg/gamestate"
+	"github.com/ken343/maritime-royale/pkg/elements"
+	"github.com/ken343/maritime-royale/pkg/elements/objects"
+	"github.com/ken343/maritime-royale/pkg/gamestate"
 )
 
 var myScreen *elements.Element
