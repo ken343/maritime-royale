@@ -2,8 +2,6 @@ package gamestate
 
 import (
 	"encoding/json"
-	"log"
-	"net"
 	"strconv"
 
 	"github.com/jtheiss19/project-undying/pkg/elements"
@@ -59,6 +57,29 @@ func GetObject(objectName string) *elements.Element {
 	return returnElem
 }
 
+func RemoveElem(badElem *elements.Element) {
+	bytes, _ := json.Marshal(&badElem)
+
+	myMRP := mrp.NewMRP([]byte("ELEM"), bytes, []byte("NIL"))
+
+	for k, existing := range chunkList[0].ChunkUnitData {
+		if badElem.UniqueName == existing.UniqueName {
+			if k < len(chunkList[0].ChunkUnitData) {
+				copy(chunkList[0].ChunkUnitData[k:], chunkList[0].ChunkUnitData[k+1:])
+			}
+			chunkList[0].ChunkUnitData[len(chunkList[0].ChunkUnitData)-1] = nil
+			chunkList[0].ChunkUnitData = chunkList[0].ChunkUnitData[:len(chunkList[0].ChunkUnitData)-1]
+
+		}
+	}
+
+	for _, conn := range connectionList {
+		conn.Write(myMRP.MRPToByte())
+	}
+}
+
+var blacklistedNames []string
+
 func PushChunks() {
 	var found bool = false
 	for _, chunkTemp := range chunkListTemp {
@@ -88,6 +109,12 @@ func PushChunks() {
 							break
 						}
 					}
+					for _, name := range blacklistedNames {
+						if unitElemTemp.UniqueName == name {
+							found = true
+							break
+						}
+					}
 					if found == true {
 						found = false
 					} else {
@@ -99,21 +126,4 @@ func PushChunks() {
 		chunkTemp.ChunkUnitData = []*elements.Element{}
 		chunkTemp.ChunkTerrainData = []*elements.Element{}
 	}
-}
-
-func SendElemMap(conn net.Conn) {
-	myMap := GetEntireWorld()
-
-	for _, myElem := range myMap {
-		bytes, err := json.Marshal(myElem)
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		myMRP := mrp.NewMRP([]byte("ELEM"), bytes, []byte(""))
-		conn.Write(myMRP.MRPToByte())
-
-	}
-
-	ForceUpdate(conn)
 }

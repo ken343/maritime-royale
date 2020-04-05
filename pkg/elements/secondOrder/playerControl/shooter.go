@@ -1,7 +1,6 @@
 package playerControl
 
 import (
-	"fmt"
 	"math"
 	"net"
 	"strconv"
@@ -97,10 +96,9 @@ func (shoot *Shooter) OnUpdateServer() error {
 			rot := math.Atan2(shoot.DestY-shoot.container.YPos, shoot.DestX-shoot.container.XPos)
 			uY, uX := math.Sincos(rot)
 
-			fmt.Println(rot)
 			myBullet.Rotation = rot
-			myBullet.XPos = shoot.container.XPos + uX*50
-			myBullet.YPos = shoot.container.YPos + uY*50
+			myBullet.XPos = shoot.container.XPos + uX*70
+			myBullet.YPos = shoot.container.YPos + uY*70
 
 			gamestate.AddUnitToWorld(myBullet)
 			gamestate.PushChunks()

@@ -3,6 +3,8 @@ package objects
 import (
 	"net"
 
+	"github.com/jtheiss19/project-undying/pkg/elements/firstOrder/health"
+
 	"github.com/jtheiss19/project-undying/pkg/elements/firstOrder/advancePos"
 
 	"github.com/jtheiss19/project-undying/pkg/elements/secondOrder/physics"
@@ -30,6 +32,9 @@ func NewPlayer(conn net.Conn) *elements.Element {
 
 	aPos := advancePos.NewAdvancePosition(player, playerSpeed)
 	player.AddComponent(aPos)
+
+	hp := health.NewHealth(player, 100)
+	player.AddComponent(hp)
 
 	//--SECOND ORDER-------------------------------------------//
 

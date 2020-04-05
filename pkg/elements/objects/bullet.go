@@ -3,9 +3,12 @@ package objects
 import (
 	"net"
 
+	"github.com/jtheiss19/project-undying/pkg/elements/thirdOrder/explode"
+
 	"github.com/jtheiss19/project-undying/pkg/gamestate"
 
 	"github.com/jtheiss19/project-undying/pkg/elements/firstOrder/advancePos"
+	"github.com/jtheiss19/project-undying/pkg/elements/firstOrder/attack"
 
 	"github.com/jtheiss19/project-undying/pkg/elements/secondOrder/physics"
 	"github.com/jtheiss19/project-undying/pkg/elements/secondOrder/playerControl"
@@ -33,6 +36,9 @@ func NewBullet(conn net.Conn, DestX, DestY float64) *elements.Element {
 	aPos := advancePos.NewAdvancePosition(bullet, 5)
 	bullet.AddComponent(aPos)
 
+	dam := attack.NewDamage(bullet)
+	bullet.AddComponent(dam)
+
 	//--SECOND ORDER-------------------------------------------//
 
 	sr := render.NewSpriteRenderer(bullet, "carrier.png")
@@ -48,6 +54,9 @@ func NewBullet(conn net.Conn, DestX, DestY float64) *elements.Element {
 	bullet.AddComponent(mov)
 
 	//--THIRD ORDER--------------------------------------------//
+
+	explo := explode.NewExplosion(bullet)
+	bullet.AddComponent(explo)
 
 	replic := playerControl.NewReplicator(bullet, conn)
 	bullet.AddComponent(replic)

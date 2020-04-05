@@ -19,6 +19,7 @@ type Collider struct {
 	Type        string
 	Radius      float64
 	HasCollided bool
+	objectsHit  []*elements.Element
 }
 
 func init() {
@@ -63,13 +64,17 @@ func (coli *Collider) OnUpdateServer() error {
 		return nil
 	}
 
+	coli.HasCollided = false
+	coli.objectsHit = []*elements.Element{}
+
 	for _, elem := range gamestate.GetEntireWorld() {
 		if elem.GetComponent(coli) != nil && elem.UniqueName != coli.container.UniqueName {
 			elemComp := elem.GetComponent(coli)
 			if isCollison(elemComp.(*Collider), coli) {
 				coli.container.XPos = coli.posData.(*advancePos.AdvancePosition).PrevX
 				coli.container.YPos = coli.posData.(*advancePos.AdvancePosition).PrevY
-				coli.HasCollided = false
+				coli.HasCollided = true
+				coli.objectsHit = append(coli.objectsHit, elem)
 			}
 		}
 	}
@@ -106,4 +111,8 @@ func (coli *Collider) SetContainer(container *elements.Element) error {
 func (coli *Collider) MakeCopy() elements.Component {
 	myComp := *coli
 	return &myComp
+}
+
+func (coli *Collider) GetObjectsHit() []*elements.Element {
+	return coli.objectsHit
 }

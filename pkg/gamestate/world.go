@@ -2,6 +2,7 @@ package gamestate
 
 import (
 	"encoding/json"
+	"log"
 	"net"
 
 	"github.com/jtheiss19/project-undying/pkg/elements"
@@ -30,4 +31,21 @@ func UpdateElemToAll(elem *elements.Element) {
 	for _, client := range connectionList {
 		SendElem(client, elem)
 	}
+}
+
+func SendElemMap(conn net.Conn) {
+	myMap := GetEntireWorld()
+
+	for _, myElem := range myMap {
+		bytes, err := json.Marshal(myElem)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		myMRP := mrp.NewMRP([]byte("ELEM"), bytes, []byte(""))
+		conn.Write(myMRP.MRPToByte())
+
+	}
+
+	ForceUpdate(conn)
 }

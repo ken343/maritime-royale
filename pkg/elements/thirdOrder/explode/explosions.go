@@ -1,0 +1,5 @@
+package explode
+
+func Init() {
+
+}

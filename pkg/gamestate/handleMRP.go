@@ -36,8 +36,18 @@ func HandleMRP(newMRPList []*mrp.MRP, conn net.Conn) {
 			var finalElem = new(elements.Element)
 			handleELEMCreates(bytesMaster, finalElem)
 
-			AddUnitToWorld(finalElem)
-			PushChunks()
+			if mrpItem.GetFooters()[0] == "NIL" {
+				for _, elem := range GetEntireWorld() {
+					if elem.UniqueName == finalElem.UniqueName {
+						blacklistedNames = append(blacklistedNames, elem.UniqueName)
+						RemoveElem(elem)
+						break
+					}
+				}
+			} else {
+				AddUnitToWorld(finalElem)
+				PushChunks()
+			}
 
 		case "REPLIC":
 			for _, elem := range GetEntireWorld() {
