@@ -24,16 +24,15 @@ func Update(screen *ebiten.Image) error {
 		return nil
 	}
 
-	world := gamestate.GetWorld()
+	world := gamestate.GetEntireWorld()
 
-	myScreen.Update(world)
+	myScreen.Update(-myScreen.XPos, -myScreen.YPos)
 	myScreen.Draw(screen, 0, 0)
 
 	tileCount := 0
 	for _, elem := range world {
 		if elem.Active && canView(elem, screen) {
-
-			err := elem.Update(world)
+			err := elem.Update(-myScreen.XPos, -myScreen.YPos)
 			if err != nil {
 				fmt.Println("updating element:", err)
 				return nil

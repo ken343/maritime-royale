@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/jtheiss19/project-undying/pkg/elements/firstOrder"
 	"github.com/jtheiss19/project-undying/pkg/elements/secondOrder"
 	"github.com/jtheiss19/project-undying/pkg/gamemap"
 	"github.com/jtheiss19/project-undying/pkg/gamestate"
@@ -13,6 +14,7 @@ import (
 const tps = 60
 
 func init() {
+	firstOrder.Init()
 	secondOrder.Init()
 }
 
@@ -22,16 +24,18 @@ func main() {
 	gamemap.NewWorld()
 
 	var timeSinceLastUpdate int64
+	var now int64
 	for {
 
 		time.Sleep((1000/tps - time.Duration(timeSinceLastUpdate)) * time.Millisecond)
-		now := time.Now().UnixNano()
+		//fmt.Println(timeSinceLastUpdate)
+		now = time.Now().UnixNano()
 
-		world := gamestate.GetWorld()
+		world := gamestate.GetEntireWorld()
 
 		for _, elem := range world {
 			if elem.Active {
-				err := elem.UpdateServer(world)
+				err := elem.UpdateServer()
 				if err != nil {
 					fmt.Println("updating element:", err)
 					return

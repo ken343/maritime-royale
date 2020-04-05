@@ -3,6 +3,8 @@ package objects
 import (
 	"net"
 
+	"github.com/jtheiss19/project-undying/pkg/elements/firstOrder/advancePos"
+
 	"github.com/jtheiss19/project-undying/pkg/elements/secondOrder/physics"
 
 	"github.com/jtheiss19/project-undying/pkg/elements"
@@ -24,20 +26,34 @@ func NewPlayer(conn net.Conn) *elements.Element {
 
 	player.UniqueName = "player"
 
+	//--FIRST ORDER--------------------------------------------//
+
+	aPos := advancePos.NewAdvancePosition(player, playerSpeed)
+	player.AddComponent(aPos)
+
+	//--SECOND ORDER-------------------------------------------//
+
 	sr := render.NewSpriteRenderer(player, "destroyer.png")
 	player.AddComponent(sr)
 
+	shot := playerControl.NewShooter(player)
+	player.AddComponent(shot)
+
 	mover := playerControl.NewKeyboardMover(player, playerSpeed)
 	player.AddComponent(mover)
-
-	replic := playerControl.NewReplicator(player, conn)
-	player.AddComponent(replic)
 
 	coli := physics.NewCollider(player)
 	player.AddComponent(coli)
 
 	rot := render.NewRotator(player)
 	player.AddComponent(rot)
+
+	//--THIRD ORDER--------------------------------------------//
+
+	//--NETWORKING---------------------------------------------//
+
+	replic := playerControl.NewReplicator(player, conn)
+	player.AddComponent(replic)
 
 	return player
 }

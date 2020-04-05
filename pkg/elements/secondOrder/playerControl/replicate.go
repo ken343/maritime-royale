@@ -2,9 +2,6 @@ package playerControl
 
 import (
 	"encoding/json"
-	"errors"
-	"fmt"
-	"math"
 	"net"
 
 	"github.com/hajimehoshi/ebiten"
@@ -52,27 +49,36 @@ func (replic *Replicator) OnDraw(screen *ebiten.Image, xOffset float64, yOffset 
 //connection if it exists. On servers to not init elements
 //with a connection. On clients init the objects with a
 //connection.
-func (replic *Replicator) OnUpdate(world []*elements.Element) error {
-	if replic.conn != nil {
+func (replic *Replicator) OnUpdate(xOffset float64, yOffset float64) error {
 
-		if replic.container.ID == connection.GetID() {
-			bytes, _ := json.Marshal(replic.container)
-			myMRP := mrp.NewMRP([]byte("REPLIC"), []byte(bytes), []byte(replic.container.ID))
-			replic.conn.Write(myMRP.MRPToByte())
-		}
-
+	if replic.container.ID == connection.GetID() {
+		bytes, _ := json.Marshal(replic.container)
+		myMRP := mrp.NewMRP([]byte("REPLIC"), []byte(bytes), []byte(replic.container.UniqueName))
+		replic.conn.Write(myMRP.MRPToByte())
 	}
+
 	return nil
 }
 
 func (replic *Replicator) OnCheck(elemC *elements.Element) error {
-	if math.Abs(replic.container.XPos-elemC.XPos) >= 20 {
-		fmt.Print("RubberBand")
-		return errors.New("DeSync")
-	}
 	return nil
 }
 
-func (replic *Replicator) OnUpdateServer(world []*elements.Element) error {
+func (replic *Replicator) OnUpdateServer() error {
+	gamestate.UpdateElemToAll(replic.container)
 	return nil
+}
+
+func (replic *Replicator) OnMerge(compM elements.Component) error {
+	return nil
+}
+
+func (replic *Replicator) SetContainer(container *elements.Element) error {
+	replic.container = container
+	return nil
+}
+
+func (replic *Replicator) MakeCopy() elements.Component {
+	myComp := *replic
+	return &myComp
 }

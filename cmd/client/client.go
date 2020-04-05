@@ -4,6 +4,8 @@ import (
 	"log"
 	"time"
 
+	"github.com/jtheiss19/project-undying/pkg/elements/firstOrder"
+
 	"github.com/hajimehoshi/ebiten"
 	"github.com/jtheiss19/project-undying/pkg/elements/secondOrder"
 	"github.com/jtheiss19/project-undying/pkg/gameloop"
@@ -19,6 +21,7 @@ const (
 )
 
 func init() {
+	firstOrder.Init()
 	secondOrder.Init()
 }
 

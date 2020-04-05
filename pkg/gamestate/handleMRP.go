@@ -36,21 +36,20 @@ func HandleMRP(newMRPList []*mrp.MRP, conn net.Conn) {
 			var finalElem = new(elements.Element)
 			handleELEMCreates(bytesMaster, finalElem)
 
-			elementListTemp = append(elementListTemp, finalElem)
-			if len(elementListTemp) > 10 {
-				PushElemMap()
-			}
+			AddUnitToWorld(finalElem)
+			PushChunks()
 
 		case "REPLIC":
-			for _, elem := range GetWorld() {
-				if elem.ID == mrpItem.GetFooters()[0] {
+			for _, elem := range GetEntireWorld() {
+				if elem.UniqueName == mrpItem.GetFooters()[0] {
 					var elemTemp = new(elements.Element)
 					handleELEMCreates([]byte(mrpItem.GetBody()), elemTemp)
 
 					if elem.Check(elemTemp) == nil {
-						handleELEMCreates([]byte(mrpItem.GetBody()), elem)
+						elemTemp.Merge(elem)
 					}
-					go UpdateElemToAll(elem)
+
+					break
 				}
 			}
 
@@ -58,7 +57,7 @@ func HandleMRP(newMRPList []*mrp.MRP, conn net.Conn) {
 			connection.SetID(mrpItem.GetBody())
 
 		case "END":
-			PushElemMap()
+			PushChunks()
 
 		default:
 			fmt.Println("Command Not Understood")
@@ -75,14 +74,16 @@ func handleELEMCreates(bytesMaster []byte, finalElem *elements.Element) {
 	test := tempElem["Components"].([]interface{})
 	for _, comp := range test {
 
-		//var myComp elements.Component
-		kindOfComp := comp.(map[string]interface{})["Type"].(string)
-		myComp := MRPMAP[kindOfComp]
-		if myComp != nil {
-			myComp.MRP(finalElem, serverConnection)
+		if comp != nil {
+
+			//var myComp elements.Component
+			kindOfComp := comp.(map[string]interface{})["Type"].(string)
+			myComp := MRPMAP[kindOfComp]
+			if myComp != nil {
+				myComp.MRP(finalElem, serverConnection)
+			}
 		}
-
 	}
-	json.Unmarshal(bytesMaster, &finalElem)
 
+	json.Unmarshal(bytesMaster, &finalElem)
 }

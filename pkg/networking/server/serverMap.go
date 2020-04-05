@@ -18,5 +18,6 @@ func spawnStarterShip(conn net.Conn, ID string) {
 	newPlayer := objects.NewPlayer(conn)
 	newPlayer.ID = ID
 	newPlayer.UniqueName = newPlayer.UniqueName + ID
-	gamestate.AddElemToWorld(newPlayer)
+	gamestate.AddUnitToWorld(newPlayer)
+	gamestate.PushChunks()
 }

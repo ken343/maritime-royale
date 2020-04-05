@@ -143,9 +143,7 @@ func (s *MRP) GetBody() string {
 func (s *MRP) GetFooters() []string {
 	var footerString []string
 	for _, item := range s.footers {
-		for _, bytes := range item {
-			footerString = append(footerString, string(bytes))
-		}
+		footerString = append(footerString, string(item))
 	}
 	return footerString
 }
