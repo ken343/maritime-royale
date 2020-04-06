@@ -22,6 +22,7 @@ A battle-royale-style, synchronous turn-based strategy game.
 * [About the Project](#about-the-project)
   * [Project Proposal](#project-proposal)
   * [Game Overview](#game-overview)
+  * [Build from Source](#installation)
   * [Built With](#built-with)
   
 <!-- ABOUT THE PROJECT -->
@@ -35,7 +36,7 @@ At the beginning of the game, all players are allotted with a Mothership: a slow
 
 The game map is a 2-Dimensional grid, dynamically sized to fit the number of participants. Each player Mothership is randomly placed on a valid tile (non-occupied, water tile). Once all Motherships have been placed, the game is begun.
 
-Each round is time-limited and carried out synchronously for all players, meaning that the players are performing their turns at the same time. For each turn, every player-controlled unit has the opportunity to move and perform a single action. These actions include:
+Each round is time-limited and carried out asynchronously for all players, meaning that the players are performing their turns at the same time. For each turn, every player-controlled unit has the opportunity to move and perform a single action. These actions include:
 * Wait - The unit can forego their action to await the next round.
 * Attack - The unit can engage an enemy unit in combat.
 * Capture - Certain units can lay claim to special map "resource" tiles.
@@ -56,11 +57,11 @@ Players are tasked with strategically combatting enemy players while capturing, 
 
 ## Overview
 
-The MARI Engine on demonstration here extends the [Ebiten](https://ebiten.org/) windowing/game engine to use data oriented programming or DOP. It does this through the use of the Element and Component. The MARI Engine also can replicate any and all behavior from clients through its multiplayer framework. This scaling multiplayer network can handle large traffic volumes while maintaing deliverability through smart updating.
+The MARI Engine on demonstration here extends the [Ebiten](https://ebiten.org/) windowing/game engine to use data oriented programming or DOP. It does this through the use of the Element and Component. The MARI Engine also can replicate any and all behavior from clients through its multiplayer framework. This scaling multiplayer network can handle large traffic volumes while maintaining deliverability through smart updating.
 
 ### DOP
 
-The main idea of DOP design is that we seperate data with the functions that call that data in the most generic way. The purpose of doing this is to prevent upcalling parent classes for data. This approfach of is ineffienct for a CPU to to. Alongside the improvement in CPU power the DOP design strucutre create extremly generic code. It is so generic in fact that DOP code can be all loaded into on structure. 
+The main idea of DOP design is that we seperate data with the functions that call that data in the most generic way. The purpose of doing this is to prevent upcalling parent classes for data. This approach a more  efficent operation for the CPU to perform. Alongside the this improvement, the DOP design structure creates extremly generic code. It is so generic in fact that DOP code can be all loaded into a single structure. 
 
 ### Elements
 
@@ -75,7 +76,7 @@ Stores the world rotation of the Element
 *     Active     bool
 Determines if the Element should be enabled or not. This is not for image culling but rather for setting an Element to be completly dorment. 
 *     UniqueName string
-The unique identifier for the Element. No two Elements may share a UniqueName during an online session. This is a nil value for all single player/non server related launches
+The unique identifier for the Element. No two Elements may share a UniqueName during an online session. This is a nil value for all single player/non server related launches.
 *     ID         string
 Determines the owner of the Element. 
 *     Components []Component
@@ -95,9 +96,9 @@ A component is simply anything fitting the abover interface. At first this may n
 
 Explanation by example is preferred. Pretend you have lots of trees and bushes in your game. Suddenly it comes upon you that your game must have fire physics. That fire should be able to spread from tree to tree and from tree to bush and bush to bush.
 
-Before to accomplish this, you would have to write functions for each object you wanted to immplemnt fire physics for and then assign each object its variables. This is tiresome escpecially if the physics needs to change. This would require changing every place you implemented code relating to fire physics. There are some ways around this delimea with OOP design, but none are very elegant, nor do they scale well.
+Before to accomplish this, you would have to write functions for each object you wanted to immplemnt fire physics for and then assign each object its variables. This is tiresome escpecially if the physics needs to change. This would require changing every place you implemented code relating to fire physics. There are some ways around this dilema with OOP design, but none are very elegant, nor do they scale very well.
 
-Here is where DOP shines. We create one component "FirePhysics" and write the code it needs to call for in the update or other respective functions. If we need variables custom to fire physics such as burnability and fire width, we can assign them to the custom component. Now we can add this component to anything and it will immeaditly implement our code. This kind of scalability is unparrelled. Not only this, but our code is now all in one location allowing for easy source control. 
+Here is where DOP shines. We create one component "FirePhysics" and write the code it needs to call for in the update or other respective functions. If we need variables custom to fire physics such as burnability and fire width, we can assign them to the custom component. Now we can add this component to anything and it will immediately implement our code. This kind of scalability is unparalleled. Not only this, but our code is now all in one location allowing for easy source control. 
 
 #### Kinds of Components
 
@@ -109,7 +110,25 @@ There are infinitly many kinds of components, but there are only three main ones
 
 The naming convention beyond this is self explanatory. 
 
-## Decalring New Components 
+## Decalaring New Components 
+
+## Installation
+
+If you are adding assets to the game, please make sure they are statically compiled with the binary for portability. Follow these instruction on how to
+do so:
+
+First install the necessary "statik" tool to convert assets.
+
+```$ go get github.com/rakyll/statik```
+
+Then run this command before ```go build``` of the server or client while in the root directory of the project workspace.
+
+```$ statik -src=./assets/sprites```
+
+Now you can perform the compilation.
+
+```$ go build ./cmd/server/```
+```$ go build ./cmd/client/```
 
 ### Built With
 
