@@ -102,9 +102,9 @@ func (sr *SpriteRenderer) OnUpdate(world []*elements.Element) error {
 }
 
 func textureFromPNG(filename string) *ebiten.Image {
-	origEbitenImage, _, err := ebitenutil.NewImageFromFile("../../assets/sprites/"+filename, ebiten.FilterDefault)
+	origEbitenImage, _, err := ebitenutil.NewImageFromFile("./assets/sprites/"+filename, ebiten.FilterDefault)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("Could not load Image from File asset => %v\n", err)
 	}
 
 	w, h := origEbitenImage.Size()

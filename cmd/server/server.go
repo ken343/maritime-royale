@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	_ "image/png"
 	"time"
 
 	"github.com/ken343/maritime-royale/pkg/elements/secondOrder"
@@ -33,7 +34,7 @@ func main() {
 			if elem.Active {
 				err := elem.UpdateServer(world)
 				if err != nil {
-					fmt.Println("updating element:", err)
+					fmt.Println("Error UpdateServer(world):", err)
 					return
 				}
 			}
