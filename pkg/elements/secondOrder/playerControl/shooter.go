@@ -85,7 +85,7 @@ func (shoot *Shooter) OnUpdateServer() error {
 	if shoot.HasFired {
 		if shoot.cooldown == 0 {
 			count++
-			shoot.cooldown = 60
+			shoot.cooldown = 0
 
 			myBullet := gamestate.GetObject("Bullet")
 			myBullet.UniqueName = "BULLET" + strconv.Itoa(count)
@@ -102,6 +102,8 @@ func (shoot *Shooter) OnUpdateServer() error {
 
 			gamestate.AddUnitToWorld(myBullet)
 			gamestate.PushChunks()
+
+			shoot.container.Same = false
 
 		}
 		shoot.HasFired = false

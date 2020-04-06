@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"time"
 
 	"github.com/jtheiss19/project-undying/pkg/elements/firstOrder"
@@ -25,21 +24,26 @@ func main() {
 
 	var timeSinceLastUpdate int64
 	var now int64
+	count := 0
 	for {
 
 		time.Sleep((1000/tps - time.Duration(timeSinceLastUpdate)) * time.Millisecond)
-		//fmt.Println(timeSinceLastUpdate)
+		if count == 60 {
+			//fmt.Println(timeSinceLastUpdate)
+			count = 0
+		}
+		count++
 		now = time.Now().UnixNano()
 
 		world := gamestate.GetEntireWorld()
 
 		for _, elem := range world {
 			if elem.Active {
-				err := elem.UpdateServer()
-				if err != nil {
-					fmt.Println("updating element:", err)
-					return
-				}
+				elem.UpdateServer()
+				//if err != nil {
+				//fmt.Println("updating element:", err)
+				//return
+				//}
 			}
 		}
 

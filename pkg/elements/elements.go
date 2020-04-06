@@ -34,6 +34,7 @@ type Element struct {
 	UniqueName string
 	ID         string
 	Components []Component
+	Same       bool
 }
 
 //Draw loops through all components within the element

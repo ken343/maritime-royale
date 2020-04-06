@@ -3,14 +3,10 @@ package objects
 import (
 	"net"
 
-	"github.com/jtheiss19/project-undying/pkg/elements/thirdOrder/explode"
-
 	"github.com/jtheiss19/project-undying/pkg/gamestate"
 
 	"github.com/jtheiss19/project-undying/pkg/elements/firstOrder/advancePos"
-	"github.com/jtheiss19/project-undying/pkg/elements/firstOrder/attack"
 
-	"github.com/jtheiss19/project-undying/pkg/elements/secondOrder/physics"
 	"github.com/jtheiss19/project-undying/pkg/elements/secondOrder/playerControl"
 
 	"github.com/jtheiss19/project-undying/pkg/elements"
@@ -36,8 +32,8 @@ func NewBullet(conn net.Conn, DestX, DestY float64) *elements.Element {
 	aPos := advancePos.NewAdvancePosition(bullet, 5)
 	bullet.AddComponent(aPos)
 
-	dam := attack.NewDamage(bullet)
-	bullet.AddComponent(dam)
+	//dam := attack.NewDamage(bullet)
+	//bullet.AddComponent(dam)
 
 	//--SECOND ORDER-------------------------------------------//
 
@@ -47,16 +43,16 @@ func NewBullet(conn net.Conn, DestX, DestY float64) *elements.Element {
 	rot := render.NewRotator(bullet)
 	bullet.AddComponent(rot)
 
-	coli := physics.NewCollider(bullet)
-	bullet.AddComponent(coli)
+	//coli := physics.NewCollider(bullet)
+	//bullet.AddComponent(coli)
 
 	mov := playerControl.NewMoveTo(bullet, -400, -400)
 	bullet.AddComponent(mov)
 
 	//--THIRD ORDER--------------------------------------------//
 
-	explo := explode.NewExplosion(bullet)
-	bullet.AddComponent(explo)
+	//explo := explode.NewExplosion(bullet)
+	//bullet.AddComponent(explo)
 
 	replic := playerControl.NewReplicator(bullet, conn)
 	bullet.AddComponent(replic)

@@ -3,6 +3,7 @@ package gamestate
 import (
 	"encoding/json"
 	"strconv"
+	"sync"
 
 	"github.com/jtheiss19/project-undying/pkg/elements"
 	"github.com/jtheiss19/project-undying/pkg/networking/mrp"
@@ -38,17 +39,58 @@ func CreateChunk() {
 }
 
 func AddUnitToWorld(elem *elements.Element) {
+
 	if len(chunkListTemp) == 0 {
 		CreateChunk()
 	}
-	chunkListTemp[0].ChunkUnitData = append(chunkListTemp[0].ChunkUnitData, elem)
+	mu.Lock()
+	for _, name := range blacklistedNames {
+		if elem.UniqueName == name {
+			mu.Unlock()
+			return
+		}
+	}
+	mu.Unlock()
+	for _, unitElem := range chunkList[0].ChunkUnitData {
+		if unitElem.UniqueName == elem.UniqueName {
+			mu.Lock()
+			*unitElem = *elem
+			mu.Unlock()
+			return
+		}
+	}
+
+	mu.Lock()
+	chunkList[0].ChunkUnitData = append(chunkList[0].ChunkUnitData, elem)
+	mu.Unlock()
+
 }
 
 func AddTerrainToWorld(elem *elements.Element) {
 	if len(chunkListTemp) == 0 {
 		CreateChunk()
 	}
-	chunkListTemp[0].ChunkTerrainData = append(chunkListTemp[0].ChunkTerrainData, elem)
+	mu.Lock()
+	for _, name := range blacklistedNames {
+		if elem.UniqueName == name {
+			mu.Unlock()
+			return
+		}
+	}
+	mu.Unlock()
+
+	for _, unitElem := range chunkList[0].ChunkTerrainData {
+		if unitElem.UniqueName == elem.UniqueName {
+			mu.Lock()
+			*unitElem = *elem
+			mu.Unlock()
+			return
+		}
+	}
+
+	mu.Lock()
+	chunkList[0].ChunkTerrainData = append(chunkList[0].ChunkTerrainData, elem)
+	mu.Unlock()
 }
 
 func GetObject(objectName string) *elements.Element {
@@ -80,50 +122,9 @@ func RemoveElem(badElem *elements.Element) {
 
 var blacklistedNames []string
 
+var mu sync.Mutex
+
 func PushChunks() {
-	var found bool = false
-	for _, chunkTemp := range chunkListTemp {
-		for _, chunk := range chunkList {
-			if chunkTemp.ChunkID == chunk.ChunkID {
-				//sync Terrain
-				for _, TerrainElemTemp := range chunkTemp.ChunkTerrainData {
-					for _, TerrainElem := range chunk.ChunkTerrainData {
-						if TerrainElem.UniqueName == TerrainElemTemp.UniqueName {
-							*TerrainElem = *TerrainElemTemp
-							found = true
-							break
-						}
-					}
-					if found == true {
-						found = false
-					} else {
-						chunk.ChunkTerrainData = append(chunk.ChunkTerrainData, TerrainElemTemp)
-					}
-				}
-				//sync Units
-				for _, unitElemTemp := range chunkTemp.ChunkUnitData {
-					for _, unitElem := range chunk.ChunkUnitData {
-						if unitElem.UniqueName == unitElemTemp.UniqueName {
-							*unitElem = *unitElemTemp
-							found = true
-							break
-						}
-					}
-					for _, name := range blacklistedNames {
-						if unitElemTemp.UniqueName == name {
-							found = true
-							break
-						}
-					}
-					if found == true {
-						found = false
-					} else {
-						chunk.ChunkUnitData = append(chunk.ChunkUnitData, unitElemTemp)
-					}
-				}
-			}
-		}
-		chunkTemp.ChunkUnitData = []*elements.Element{}
-		chunkTemp.ChunkTerrainData = []*elements.Element{}
-	}
+	mu.Lock()
+	mu.Unlock()
 }

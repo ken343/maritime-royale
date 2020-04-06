@@ -55,15 +55,19 @@ func (mover *KeyboardMover) OnUpdate(xOffset float64, yOffset float64) error {
 
 	if ebiten.IsKeyPressed(ebiten.KeyA) {
 		mover.posData.(*advancePos.AdvancePosition).VX += -mover.posData.(*advancePos.AdvancePosition).Speed
+		mover.container.Same = false
 	}
 	if ebiten.IsKeyPressed(ebiten.KeyD) {
 		mover.posData.(*advancePos.AdvancePosition).VX += mover.posData.(*advancePos.AdvancePosition).Speed
+		mover.container.Same = false
 	}
 	if ebiten.IsKeyPressed(ebiten.KeyW) {
 		mover.posData.(*advancePos.AdvancePosition).VY += -mover.posData.(*advancePos.AdvancePosition).Speed
+		mover.container.Same = false
 	}
 	if ebiten.IsKeyPressed(ebiten.KeyS) {
 		mover.posData.(*advancePos.AdvancePosition).VY += mover.posData.(*advancePos.AdvancePosition).Speed
+		mover.container.Same = false
 	}
 
 	return nil

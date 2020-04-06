@@ -77,5 +77,6 @@ func (hp *Health) MakeCopy() elements.Component {
 
 func (hp *Health) TakeDamage(damage float64) {
 	hp.HealthTotal = hp.HealthTotal - damage
+	hp.container.Same = false
 	return
 }

@@ -17,6 +17,7 @@ type Replicator struct {
 	container *elements.Element
 	conn      net.Conn
 	Type      string
+	count     int
 }
 
 func init() {
@@ -28,6 +29,7 @@ func init() {
 //the component that handles all replication
 //of an element onto a server.
 func NewReplicator(container *elements.Element, conn net.Conn) *Replicator {
+
 	return &Replicator{
 		container: container,
 		conn:      conn,
@@ -51,10 +53,13 @@ func (replic *Replicator) OnDraw(screen *ebiten.Image, xOffset float64, yOffset 
 //connection.
 func (replic *Replicator) OnUpdate(xOffset float64, yOffset float64) error {
 
-	if replic.container.ID == connection.GetID() {
+	if replic.container.ID == connection.GetID() && replic.conn != nil && !replic.container.Same {
+
 		bytes, _ := json.Marshal(replic.container)
 		myMRP := mrp.NewMRP([]byte("REPLIC"), []byte(bytes), []byte(replic.container.UniqueName))
 		replic.conn.Write(myMRP.MRPToByte())
+
+		replic.container.Same = true
 	}
 
 	return nil
@@ -65,7 +70,21 @@ func (replic *Replicator) OnCheck(elemC *elements.Element) error {
 }
 
 func (replic *Replicator) OnUpdateServer() error {
-	gamestate.UpdateElemToAll(replic.container)
+
+	if replic.count == 100 && !replic.container.Same {
+
+		go gamestate.UpdateElemToAll(replic.container)
+
+		replic.count = 0
+		replic.container.Same = true
+
+	} else if replic.count == 100 {
+
+		replic.count = 0
+	}
+
+	replic.count++
+
 	return nil
 }
 

@@ -46,6 +46,5 @@ func SendElemMap(conn net.Conn) {
 		conn.Write(myMRP.MRPToByte())
 
 	}
-
 	ForceUpdate(conn)
 }

@@ -23,63 +23,55 @@ func Dial(address string) {
 	if err != nil {
 		log.Panic(err)
 	}
-
 	go mrp.ReadMRPFromConn(serverConnection, HandleMRP)
 }
 
-func HandleMRP(newMRPList []*mrp.MRP, conn net.Conn) {
-	for _, mrpItem := range newMRPList {
-		switch mrpItem.GetRequest() {
-		case "ELEM":
-			bytesMaster := []byte(mrpItem.GetBody())
+func HandleMRP(mrpItem *mrp.MRP, conn net.Conn) {
+	switch mrpItem.GetRequest() {
+	case "ELEM":
+		bytesMaster := []byte(mrpItem.GetBody())
 
-			var finalElem = new(elements.Element)
-			handleELEMCreates(bytesMaster, finalElem)
+		var finalElem = new(elements.Element)
+		handleELEMCreates(bytesMaster, finalElem)
 
-			if mrpItem.GetFooters()[0] == "NIL" {
-				for _, elem := range GetEntireWorld() {
-					if elem.UniqueName == finalElem.UniqueName {
-						blacklistedNames = append(blacklistedNames, elem.UniqueName)
-						RemoveElem(elem)
-						break
-					}
-				}
-			} else {
-				AddUnitToWorld(finalElem)
-				PushChunks()
-			}
-
-		case "REPLIC":
+		if mrpItem.GetFooters()[0] == "NIL" {
 			for _, elem := range GetEntireWorld() {
-				if elem.UniqueName == mrpItem.GetFooters()[0] {
-					var elemTemp = new(elements.Element)
-					handleELEMCreates([]byte(mrpItem.GetBody()), elemTemp)
-
-					if elem.Check(elemTemp) == nil {
-						elemTemp.Merge(elem)
-					}
-
+				if elem.UniqueName == finalElem.UniqueName {
+					blacklistedNames = append(blacklistedNames, elem.UniqueName)
+					RemoveElem(elem)
 					break
 				}
 			}
+		} else {
+			AddUnitToWorld(finalElem)
 
-		case "ID":
-			connection.SetID(mrpItem.GetBody())
-
-		case "END":
 			PushChunks()
 
-		default:
-			fmt.Println("Command Not Understood")
 		}
+
+	case "REPLIC":
+		world := GetEntireWorld()
+		handleREPLIC(mrpItem, conn, world)
+
+	case "ID":
+		connection.SetID(mrpItem.GetBody())
+
+	case "END":
+		PushChunks()
+
+	default:
+		fmt.Println("Command Not Understood")
 	}
+
 }
 
 func handleELEMCreates(bytesMaster []byte, finalElem *elements.Element) {
 
-	var tempElem map[string]interface{}
+	var tempElem = *new(map[string]interface{})
 
 	json.Unmarshal(bytesMaster, &tempElem)
+
+	//fmt.Println(tempElem)
 
 	test := tempElem["Components"].([]interface{})
 	for _, comp := range test {
@@ -96,4 +88,20 @@ func handleELEMCreates(bytesMaster []byte, finalElem *elements.Element) {
 	}
 
 	json.Unmarshal(bytesMaster, &finalElem)
+}
+
+func handleREPLIC(mrpItem *mrp.MRP, conn net.Conn, world []*elements.Element) {
+	for _, elem := range world {
+		if elem.UniqueName == mrpItem.GetFooters()[0] {
+			var elemTemp = new(elements.Element)
+			handleELEMCreates([]byte(mrpItem.GetBody()), elemTemp)
+
+			if elem.Check(elemTemp) == nil {
+				elemTemp.Merge(elem)
+			}
+
+			break
+		}
+	}
+
 }

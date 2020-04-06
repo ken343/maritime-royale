@@ -5,6 +5,8 @@ import (
 	"time"
 
 	"github.com/jtheiss19/project-undying/pkg/elements/firstOrder"
+	"github.com/jtheiss19/project-undying/pkg/elements/objects"
+	"github.com/jtheiss19/project-undying/pkg/networking/connection"
 
 	"github.com/hajimehoshi/ebiten"
 	"github.com/jtheiss19/project-undying/pkg/elements/secondOrder"
@@ -28,9 +30,16 @@ func init() {
 func main() {
 
 	if addr != "" {
-		gamestate.Dial("localhost:8080")
+		gamestate.Dial(addr)
 	} else {
 		gamemap.NewWorld()
+		connection.SetID("0")
+		newPlayer := objects.NewPlayer(nil)
+		newPlayer.ID = "0"
+		newPlayer.UniqueName = newPlayer.UniqueName + newPlayer.ID
+		gamestate.AddUnitToWorld(newPlayer)
+		gamestate.PushChunks()
+		gameloop.IsServer = true
 	}
 
 	time.Sleep(1 * time.Second)
