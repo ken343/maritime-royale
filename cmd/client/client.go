@@ -10,6 +10,7 @@ import (
 	"github.com/ken343/maritime-royale/pkg/gameloop"
 	"github.com/ken343/maritime-royale/pkg/gamemap"
 	"github.com/ken343/maritime-royale/pkg/gamestate"
+	_ "github.com/ken343/maritime-royale/statik"
 )
 
 const (

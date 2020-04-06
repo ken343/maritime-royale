@@ -1,14 +1,15 @@
 package render
 
 import (
+	"image/png"
 	"log"
 	"net"
 
 	"github.com/ken343/maritime-royale/pkg/gamestate"
 
 	"github.com/hajimehoshi/ebiten"
-	"github.com/hajimehoshi/ebiten/ebitenutil"
 	"github.com/ken343/maritime-royale/pkg/elements"
+	"github.com/rakyll/statik/fs"
 )
 
 //SpriteRenderer is the component that handles all
@@ -102,10 +103,31 @@ func (sr *SpriteRenderer) OnUpdate(world []*elements.Element) error {
 }
 
 func textureFromPNG(filename string) *ebiten.Image {
-	origEbitenImage, _, err := ebitenutil.NewImageFromFile("./assets/sprites/"+filename, ebiten.FilterDefault)
+
+	statikFS, err := fs.New()
 	if err != nil {
-		log.Fatalf("Could not load Image from File asset => %v\n", err)
+		log.Fatal(err)
 	}
+
+	statikImage, err := statikFS.Open("/" + filename)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer statikImage.Close()
+
+	pngStatikImage, err := png.Decode(statikImage)
+	if err != nil {
+		log.Fatalf("Could not png.Decode statikImage => %v\n", err)
+	}
+
+	origEbitenImage, err := ebiten.NewImageFromImage(pngStatikImage, ebiten.FilterDefault)
+	if err != nil {
+		log.Fatalf("Could not load ebiten image from statik asset => %v\n", err)
+	}
+	// origEbitenImage, _, err := ebitenutil.NewImageFromFile("./assets/sprites/"+filename, ebiten.FilterDefault)
+	// if err != nil {
+	// 	log.Fatalf("Could not load Image from File asset => %v\n", err)
+	// }
 
 	w, h := origEbitenImage.Size()
 	masterTexture, _ := ebiten.NewImage(w, h, ebiten.FilterDefault)

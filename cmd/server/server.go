@@ -9,12 +9,14 @@ import (
 	"github.com/ken343/maritime-royale/pkg/gamemap"
 	"github.com/ken343/maritime-royale/pkg/gamestate"
 	"github.com/ken343/maritime-royale/pkg/networking/server"
+	_ "github.com/ken343/maritime-royale/statik"
 )
 
 const tps = 60
 
 func init() {
 	secondOrder.Init()
+
 }
 
 func main() {
