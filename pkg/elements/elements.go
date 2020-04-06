@@ -67,6 +67,7 @@ func (elem *Element) Update(world []*Element) error {
 	return nil
 }
 
+// UpdateServer updates the server with the altered list of world elements.
 func (elem *Element) UpdateServer(world []*Element) error {
 	for _, comp := range elem.Components {
 		if comp != nil {
@@ -80,6 +81,8 @@ func (elem *Element) UpdateServer(world []*Element) error {
 	return nil
 }
 
+// Check can be used to perform the available OnCheck() function on an element within an element?
+// Is elemC supposed to be a component?
 func (elem *Element) Check(elemC *Element) error {
 	for _, comp := range elem.Components {
 		if comp != nil {

@@ -124,10 +124,6 @@ func textureFromPNG(filename string) *ebiten.Image {
 	if err != nil {
 		log.Fatalf("Could not load ebiten image from statik asset => %v\n", err)
 	}
-	// origEbitenImage, _, err := ebitenutil.NewImageFromFile("./assets/sprites/"+filename, ebiten.FilterDefault)
-	// if err != nil {
-	// 	log.Fatalf("Could not load Image from File asset => %v\n", err)
-	// }
 
 	w, h := origEbitenImage.Size()
 	masterTexture, _ := ebiten.NewImage(w, h, ebiten.FilterDefault)
