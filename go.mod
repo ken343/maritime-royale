@@ -8,7 +8,7 @@ require (
 	github.com/go-gl/glfw v0.0.0-20200222043503-6f7a984d4dc4 // indirect
 	github.com/hajimehoshi/ebiten v1.10.5
 	github.com/jfreymuth/oggvorbis v1.0.1 // indirect
-	github.com/jtheiss19/project-undying v0.0.0-20200405191920-b7dc561a1ccc // indirect
+	github.com/jtheiss19/project-undying v0.0.0-20200405191920-b7dc561a1ccc
 	github.com/kr/pretty v0.2.0 // indirect
 	github.com/kr/pty v1.1.8 // indirect
 	github.com/kr/text v0.2.0 // indirect

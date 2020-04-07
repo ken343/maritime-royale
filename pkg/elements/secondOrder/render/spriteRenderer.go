@@ -98,7 +98,7 @@ func (sr *SpriteRenderer) OnDraw(screen *ebiten.Image, xOffset float64, yOffset 
 }
 
 //OnUpdate is used to qualify SpriteRenderer as a component
-func (sr *SpriteRenderer) OnUpdate(world []*elements.Element) error {
+func (sr *SpriteRenderer) OnUpdate(xOffset float64, yOffset float64) error {
 	return nil
 }
 
@@ -138,6 +138,20 @@ func (sr *SpriteRenderer) OnCheck(elemC *elements.Element) error {
 	return nil
 }
 
-func (sr *SpriteRenderer) OnUpdateServer(world []*elements.Element) error {
+func (sr *SpriteRenderer) OnUpdateServer() error {
 	return nil
+}
+
+func (sr *SpriteRenderer) OnMerge(compM elements.Component) error {
+	return nil
+}
+
+func (sr *SpriteRenderer) SetContainer(container *elements.Element) error {
+	sr.container = container
+	return nil
+}
+
+func (sr *SpriteRenderer) MakeCopy() elements.Component {
+	myComp := *sr
+	return &myComp
 }

@@ -1,0 +1,5 @@
+package advancePos
+
+func Init() {
+
+}

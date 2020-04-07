@@ -6,17 +6,17 @@ import (
 
 	"github.com/hajimehoshi/ebiten"
 	"github.com/ken343/maritime-royale/pkg/elements"
+	"github.com/ken343/maritime-royale/pkg/elements/firstOrder/advancePos"
 	"github.com/ken343/maritime-royale/pkg/gamestate"
-	"github.com/ken343/maritime-royale/pkg/networking/connection"
 )
 
 //Rotator is the component that handles all
 //rendering of sprites onto the screen
 type Rotator struct {
 	container *elements.Element
-	XPrev     float64
-	YPrev     float64
-	Type      string
+	posData   elements.Component
+
+	Type string
 }
 
 func init() {
@@ -31,8 +31,7 @@ func NewRotator(container *elements.Element) *Rotator {
 
 	return &Rotator{
 		container: container,
-		XPrev:     0,
-		YPrev:     0,
+		posData:   container.GetComponent(new(advancePos.AdvancePosition)),
 		Type:      "Rotator",
 	}
 }
@@ -48,16 +47,7 @@ func (rot *Rotator) OnDraw(screen *ebiten.Image, xOffset float64, yOffset float6
 }
 
 //OnUpdate is used to qualify SpriteRenderer as a component
-func (rot *Rotator) OnUpdate(world []*elements.Element) error {
-	if rot.container.ID != connection.GetID() {
-		return nil
-	}
-	if rot.container.YPos == rot.YPrev && rot.container.XPos == rot.XPrev {
-	} else {
-		rot.container.Rotation = math.Atan2((rot.container.YPos - rot.YPrev), (rot.container.XPos - rot.XPrev))
-	}
-	rot.XPrev = rot.container.XPos
-	rot.YPrev = rot.container.YPos
+func (rot *Rotator) OnUpdate(xOffset float64, yOffset float64) error {
 	return nil
 }
 
@@ -65,6 +55,27 @@ func (rot *Rotator) OnCheck(elemC *elements.Element) error {
 	return nil
 }
 
-func (rot *Rotator) OnUpdateServer(world []*elements.Element) error {
+func (rot *Rotator) OnMerge(compM elements.Component) error {
 	return nil
+}
+
+func (rot *Rotator) OnUpdateServer() error {
+
+	if rot.container.YPos == rot.posData.(*advancePos.AdvancePosition).PrevY && rot.container.XPos == rot.posData.(*advancePos.AdvancePosition).PrevX {
+	} else if rot.posData.(*advancePos.AdvancePosition).PrevY == 0 || rot.posData.(*advancePos.AdvancePosition).PrevX == 0 {
+	} else {
+		rot.container.Rotation = math.Atan2((rot.container.YPos - rot.posData.(*advancePos.AdvancePosition).PrevY), (rot.container.XPos - rot.posData.(*advancePos.AdvancePosition).PrevX))
+	}
+
+	return nil
+}
+
+func (rot *Rotator) SetContainer(container *elements.Element) error {
+	rot.container = container
+	return nil
+}
+
+func (rot *Rotator) MakeCopy() elements.Component {
+	myComp := *rot
+	return &myComp
 }

@@ -2,9 +2,6 @@ package playerControl
 
 import (
 	"encoding/json"
-	"errors"
-	"fmt"
-	"math"
 	"net"
 
 	"github.com/hajimehoshi/ebiten"
@@ -20,6 +17,7 @@ type Replicator struct {
 	container *elements.Element
 	conn      net.Conn
 	Type      string
+	count     int
 }
 
 func init() {
@@ -31,6 +29,7 @@ func init() {
 //the component that handles all replication
 //of an element onto a server.
 func NewReplicator(container *elements.Element, conn net.Conn) *Replicator {
+
 	return &Replicator{
 		container: container,
 		conn:      conn,
@@ -52,27 +51,53 @@ func (replic *Replicator) OnDraw(screen *ebiten.Image, xOffset float64, yOffset 
 //connection if it exists. On servers to not init elements
 //with a connection. On clients init the objects with a
 //connection.
-func (replic *Replicator) OnUpdate(world []*elements.Element) error {
-	if replic.conn != nil {
+func (replic *Replicator) OnUpdate(xOffset float64, yOffset float64) error {
 
-		if replic.container.ID == connection.GetID() {
-			bytes, _ := json.Marshal(replic.container)
-			myMRP := mrp.NewMRP([]byte("REPLIC"), []byte(bytes), []byte(replic.container.ID))
-			replic.conn.Write(myMRP.MRPToByte())
-		}
+	if replic.container.ID == connection.GetID() && replic.conn != nil && !replic.container.Same {
 
+		bytes, _ := json.Marshal(replic.container)
+		myMRP := mrp.NewMRP([]byte("REPLIC"), []byte(bytes), []byte(replic.container.UniqueName))
+		replic.conn.Write(myMRP.MRPToByte())
+
+		replic.container.Same = true
 	}
+
 	return nil
 }
 
 func (replic *Replicator) OnCheck(elemC *elements.Element) error {
-	if math.Abs(replic.container.XPos-elemC.XPos) >= 20 {
-		fmt.Print("RubberBand")
-		return errors.New("DeSync")
-	}
 	return nil
 }
 
-func (replic *Replicator) OnUpdateServer(world []*elements.Element) error {
+func (replic *Replicator) OnUpdateServer() error {
+
+	if replic.count == 100 && !replic.container.Same {
+
+		go gamestate.UpdateElemToAll(replic.container)
+
+		replic.count = 0
+		replic.container.Same = true
+
+	} else if replic.count == 100 {
+
+		replic.count = 0
+	}
+
+	replic.count++
+
 	return nil
+}
+
+func (replic *Replicator) OnMerge(compM elements.Component) error {
+	return nil
+}
+
+func (replic *Replicator) SetContainer(container *elements.Element) error {
+	replic.container = container
+	return nil
+}
+
+func (replic *Replicator) MakeCopy() elements.Component {
+	myComp := *replic
+	return &myComp
 }

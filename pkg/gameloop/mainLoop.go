@@ -11,6 +11,7 @@ import (
 )
 
 var myScreen *elements.Element
+var IsServer = false
 
 func MakeScreen() {
 	myScreen = objects.NewScreen(-1280/2, -720/2)
@@ -24,27 +25,30 @@ func Update(screen *ebiten.Image) error {
 		return nil
 	}
 
-	world := gamestate.GetWorld()
+	world := gamestate.GetEntireWorld()
 
-	myScreen.Update(world)
+	myScreen.Update(-myScreen.XPos, -myScreen.YPos)
 	myScreen.Draw(screen, 0, 0)
 
 	tileCount := 0
 	for _, elem := range world {
 		if elem.Active && canView(elem, screen) {
 
-			err := elem.Update(world)
+			err := elem.Update(-myScreen.XPos, -myScreen.YPos)
 			if err != nil {
 				fmt.Println("updating element:", err)
-				return nil
 			}
+
+			go elem.UpdateServer()
+
 			err = elem.Draw(screen, -myScreen.XPos, -myScreen.YPos)
 			if err != nil {
 				fmt.Println("drawing element:", elem)
 				return nil
 			}
-			tileCount++
+
 		}
+		tileCount++
 	}
 
 	msg := fmt.Sprintf(" TPS: %0.2f \n FPS: %0.2f \n Number of Things Drawn: %d", ebiten.CurrentTPS(), ebiten.CurrentFPS(), tileCount)

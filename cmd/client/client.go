@@ -5,6 +5,10 @@ import (
 	"log"
 	"time"
 
+	"github.com/ken343/maritime-royale/pkg/elements/firstOrder"
+	"github.com/ken343/maritime-royale/pkg/elements/objects"
+	"github.com/ken343/maritime-royale/pkg/networking/connection"
+
 	"github.com/hajimehoshi/ebiten"
 	"github.com/ken343/maritime-royale/pkg/elements/secondOrder"
 	"github.com/ken343/maritime-royale/pkg/gameloop"
@@ -21,15 +25,23 @@ const (
 )
 
 func init() {
+	firstOrder.Init()
 	secondOrder.Init()
 }
 
 func main() {
 
 	if addr != "" {
-		gamestate.Dial("localhost:8080")
+		gamestate.Dial(addr)
 	} else {
 		gamemap.NewWorld()
+		connection.SetID("0")
+		newPlayer := objects.NewPlayer(nil)
+		newPlayer.ID = "0"
+		newPlayer.UniqueName = newPlayer.UniqueName + newPlayer.ID
+		gamestate.AddUnitToWorld(newPlayer)
+		gamestate.PushChunks()
+		gameloop.IsServer = true
 	}
 
 	time.Sleep(1 * time.Second)

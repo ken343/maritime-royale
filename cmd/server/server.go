@@ -1,10 +1,10 @@
 package main
 
 import (
-	"fmt"
 	_ "image/png"
 	"time"
 
+	"github.com/ken343/maritime-royale/pkg/elements/firstOrder"
 	"github.com/ken343/maritime-royale/pkg/elements/secondOrder"
 	"github.com/ken343/maritime-royale/pkg/gamemap"
 	"github.com/ken343/maritime-royale/pkg/gamestate"
@@ -15,6 +15,7 @@ import (
 const tps = 60
 
 func init() {
+	firstOrder.Init()
 	secondOrder.Init()
 
 }
@@ -25,20 +26,27 @@ func main() {
 	gamemap.NewWorld()
 
 	var timeSinceLastUpdate int64
+	var now int64
+	count := 0
 	for {
 
 		time.Sleep((1000/tps - time.Duration(timeSinceLastUpdate)) * time.Millisecond)
-		now := time.Now().UnixNano()
+		if count == 60 {
+			//fmt.Println(timeSinceLastUpdate)
+			count = 0
+		}
+		count++
+		now = time.Now().UnixNano()
 
-		world := gamestate.GetWorld()
+		world := gamestate.GetEntireWorld()
 
 		for _, elem := range world {
 			if elem.Active {
-				err := elem.UpdateServer(world)
-				if err != nil {
-					fmt.Println("Error UpdateServer(world):", err)
-					return
-				}
+				elem.UpdateServer()
+				//if err != nil {
+				//fmt.Println("updating element:", err)
+				//return
+				//}
 			}
 		}
 

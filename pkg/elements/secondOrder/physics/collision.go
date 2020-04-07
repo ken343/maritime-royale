@@ -4,6 +4,7 @@ import (
 	"math"
 	"net"
 
+	"github.com/ken343/maritime-royale/pkg/elements/firstOrder/advancePos"
 	"github.com/ken343/maritime-royale/pkg/gamestate"
 
 	"github.com/hajimehoshi/ebiten"
@@ -14,11 +15,11 @@ import (
 //keyboard movement
 type Collider struct {
 	container   *elements.Element
+	posData     elements.Component
 	Type        string
 	Radius      float64
-	PrevX       float64
-	PrevY       float64
 	HasCollided bool
+	objectsHit  []*elements.Element
 }
 
 func init() {
@@ -32,6 +33,7 @@ func NewCollider(container *elements.Element) *Collider {
 	return &Collider{
 		container:   container,
 		Type:        "Collider",
+		posData:     container.GetComponent(new(advancePos.AdvancePosition)),
 		Radius:      50,
 		HasCollided: false,
 	}
@@ -49,22 +51,7 @@ func (coli *Collider) OnDraw(screen *ebiten.Image, xOffset float64, yOffset floa
 
 //OnUpdate scans the state of the keyboard and prefroms
 //actions based on said state.
-func (coli *Collider) OnUpdate(world []*elements.Element) error {
-
-	for _, elem := range world {
-		if elem.GetComponent(coli) != nil && elem.ID != coli.container.ID {
-			elemComp := elem.GetComponent(coli)
-			if isCollison(elemComp.(*Collider), coli) {
-				coli.container.XPos = coli.PrevX
-				coli.container.YPos = coli.PrevY
-				coli.HasCollided = true
-			}
-		}
-	}
-
-	coli.PrevX = coli.container.XPos
-	coli.PrevY = coli.container.YPos
-
+func (coli *Collider) OnUpdate(xOffset float64, yOffset float64) error {
 	return nil
 }
 
@@ -72,22 +59,30 @@ func (coli *Collider) OnCheck(elemC *elements.Element) error {
 	return nil
 }
 
-func (coli *Collider) OnUpdateServer(world []*elements.Element) error {
-	gamestate.GetWorld()
-	for _, elem := range world {
-		if elem.GetComponent(coli) != nil && elem.ID != coli.container.ID {
+func (coli *Collider) OnUpdateServer() error {
+	if coli.posData == nil {
+		return nil
+	}
+
+	coli.HasCollided = false
+	coli.objectsHit = []*elements.Element{}
+
+	for _, elem := range gamestate.GetEntireWorld() {
+		if elem.GetComponent(coli) != nil && elem.UniqueName != coli.container.UniqueName {
 			elemComp := elem.GetComponent(coli)
 			if isCollison(elemComp.(*Collider), coli) {
-				coli.container.XPos = coli.PrevX
-				coli.container.YPos = coli.PrevY
+				coli.container.XPos = coli.posData.(*advancePos.AdvancePosition).PrevX
+				coli.container.YPos = coli.posData.(*advancePos.AdvancePosition).PrevY
 				coli.HasCollided = true
+				coli.objectsHit = append(coli.objectsHit, elem)
 			}
 		}
 	}
 
-	coli.PrevX = coli.container.XPos
-	coli.PrevY = coli.container.YPos
+	return nil
+}
 
+func (coli *Collider) OnMerge(compM elements.Component) error {
 	return nil
 }
 
@@ -105,4 +100,19 @@ func isCollison(coli1, coli2 *Collider) bool {
 		return true
 	}
 	return false
+}
+
+func (coli *Collider) SetContainer(container *elements.Element) error {
+	coli.container = container
+	coli.posData = container.GetComponent(new(advancePos.AdvancePosition))
+	return nil
+}
+
+func (coli *Collider) MakeCopy() elements.Component {
+	myComp := *coli
+	return &myComp
+}
+
+func (coli *Collider) GetObjectsHit() []*elements.Element {
+	return coli.objectsHit
 }

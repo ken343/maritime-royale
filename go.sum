@@ -24,6 +24,7 @@ github.com/jfreymuth/oggvorbis v1.0.1/go.mod h1:NqS+K+UXKje0FUYUPosyQ+XTVvjmVjps
 github.com/jfreymuth/vorbis v1.0.0/go.mod h1:8zy3lUAm9K/rJJk223RKy6vjCZTWC61NA2QD06bfOE0=
 github.com/jtheiss19/project-undying v0.0.0-20200404100414-6261cd21c380 h1:zKuuBn7UMf3iozNtYOjLLZwCNE87AWuoKXr4CGcoHcA=
 github.com/jtheiss19/project-undying v0.0.0-20200404100414-6261cd21c380/go.mod h1:omeYNk1BRC/8JeyBAgS4S/SdaicVFgWlAG1CaGz5tuk=
+github.com/jtheiss19/project-undying v0.0.0-20200405191920-b7dc561a1ccc h1:aou+w1hX9ERkzW6xjZOV3bMjFs5QDdFhDaPJc2Jgwfg=
 github.com/jtheiss19/project-undying v0.0.0-20200405191920-b7dc561a1ccc/go.mod h1:pAb/c5aBzXe29VY+5tnQma3SRyyxJEVPJzOAzWdzPYo=
 github.com/kr/pretty v0.1.0 h1:L/CwN0zerZDmRFUapSPitk6f+Q3+0za1rQkzVuMiMFI=
 github.com/kr/pretty v0.1.0/go.mod h1:dAy3ld7l9f0ibDNOQOHHMYYIIbhfbHSm3C4ZsoJORNo=
@@ -34,6 +35,8 @@ github.com/kr/text v0.1.0 h1:45sCR5RtlFHMR4UwH9sdQ5TC8v0qDQCHnXt+kaKSTVE=
 github.com/kr/text v0.1.0/go.mod h1:4Jbv+DJW3UT/LiOwJeYQe1efqtUx/iVham/4vfdArNI=
 github.com/kr/text v0.2.0 h1:5Nx0Ya0ZqY2ygV366QzturHI13Jq95ApcVaJBhpS+AY=
 github.com/kr/text v0.2.0/go.mod h1:eLer722TekiGuMkidMxC/pM04lWEeraHUUmBw8l2grE=
+github.com/ld9999999999/go-interfacetools v0.0.0-20151014172923-5c708af5db62 h1:Yxmgqjdx/bnDhp8TSw9CENvRrMiJklKYDfruUMROaFk=
+github.com/ld9999999999/go-interfacetools v0.0.0-20151014172923-5c708af5db62/go.mod h1:HaEcNiqo/Y5y/ZpHKx6bWRvJJ+HXelkjSCpk0MEf19k=
 github.com/ld9999999999/go-interfacetools v0.0.0-20151014172923-5c708af5db62/go.mod h1:HaEcNiqo/Y5y/ZpHKx6bWRvJJ+HXelkjSCpk0MEf19k=
 github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e h1:fD57ERR4JtEqsWbfPhv4DMiApHyliiK5xCTNVSPiaAs=
 github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e/go.mod h1:zD1mROLANZcx1PVRCS0qkT7pwLkGfwJo4zjcN/Tysno=
