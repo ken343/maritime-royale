@@ -9,6 +9,7 @@ import (
 
 	"github.com/hajimehoshi/ebiten"
 	"github.com/ken343/maritime-royale/pkg/elements"
+	_ "github.com/ken343/maritime-royale/statik" // This needs to be here to load static images
 	"github.com/rakyll/statik/fs"
 )
 
@@ -106,12 +107,12 @@ func textureFromPNG(filename string) *ebiten.Image {
 
 	statikFS, err := fs.New()
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("Could not load new statik Filesystem => %v\n", err)
 	}
 
 	statikImage, err := statikFS.Open("/" + filename)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("Could not load statik file from file system => %v\n", err)
 	}
 	defer statikImage.Close()
 
